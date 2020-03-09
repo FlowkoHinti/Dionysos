@@ -1,7 +1,10 @@
 # Dionysos
-Project for Software-Development 2nd semester
+Project for Software-Development 2nd semester.
 
-#GIT
+# Goal
+Development of a RGB Display-Matrix Solution with an Arduino and Raspberry PI
+
+# GIT Commands
 1) git config
 
 Utility : To set your user name and email in the main configuration file.
