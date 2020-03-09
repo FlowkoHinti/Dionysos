@@ -4,10 +4,6 @@
 #define displayHight 20
 #define baudrate 19200
 
-void establishConnection();
-void exchangeInfo();
-bool checkConnection();
-
 typedef struct{
   short id;
   short red;
@@ -18,10 +14,14 @@ typedef struct{
 //mit folgenden Pointer bitte die Operationen machen:
 //mein Plan: jedes Pixel ist im Array gespeichert und wir updaten die Matrix anhand des Arrays mit einem delay für die Wiederholrate
 pixel *currentDisplay = malloc(sizeof(pixel) * displayWidth * displayHight);
+short pixelcnt = 0;
+
+void establishConnection();
+void exchangeInfo();
+bool checkConnection();
+void parseSerial();
 
 void setup() {
-  // put your setup code here, to run once:
- 
   Serial.begin(baudrate);
   establishConnection();
   exchangeInfo();
@@ -29,9 +29,30 @@ void setup() {
 
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  //Wie die Main()
+  if (Serial.available() > 0){
+    //checkConnection vllt? (Notiz an mich selbst)
+    //interrupt wenn daten vohanden sind
+      parseSerial();
+    }
+
+
+    /*
+     * HIER DEIN CODE
+     * 
+     * 
+     */
+
+
+    
+  
 }
+
+void toDisplay(){
+  //HIER DEIN CODE
+  //kannst ja noch weitere Funktionen hinzufügen fallst du brauchst
+}
+
+
 
 void establishConnection(){
   //Baut die Verbindung auf
@@ -50,9 +71,28 @@ void exchangeInfo(){
   Serial.println(String(displayHight));
 }
 
+void parseSerial(){
+  if(Serial.parseInt() == 0){
+    short x = Serial.parseInt();
+    short y = Serial.parseInt();
+    short r = Serial.parseInt();
+    short g = Serial.parseInt();
+    short b = Serial.parseInt();
+  }
+  //Bitte erweitern
+  
+  
+
+}
+
+void findID(short x, short y){
+  //--> FINDE die ID anhand von x und y Positionen
+  
+  }
+
+
 bool checkConnection(){
   //Für Überprüfung 
-  
   
   return true;
 }
