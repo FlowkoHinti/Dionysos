@@ -2,7 +2,6 @@ import serial
 
 class display:
 
-
     def __init__(self, port, rate):
         self.port = port
         self.rate = rate
