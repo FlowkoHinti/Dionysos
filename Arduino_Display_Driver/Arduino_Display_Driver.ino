@@ -42,7 +42,7 @@ void loop() {
 
 
     
-  
+  //free(currentDisplay);
 }
 
 
