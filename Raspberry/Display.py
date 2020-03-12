@@ -1,58 +1,69 @@
 import serial
+import threading
+from queue import Queue
+from time import sleep
 
 
-class display:
+class Display:
 
     def __init__(self, port, baudrate):
         try:
             self.serialCon = serial.Serial(port, baudrate)
         except:
             print("Couldn't open Serial port")
+
         self.displayWidth = 0
         self.displayHight = 0
-        self.getDisplay()
-        print(self.displayWidth)
-        print(self.displayHight)
+        self.received = Queue()
+        self.__getDisplay()
+        self.__readLines()
+        # self.__writeSer('1 10 5 0x555555')
 
-    def getDisplay(self):
-        while self.checkSer():
-            self.writeSer('SYNACK')
-            if b'ACK' in self.serialCon.readline():
-                self.displayWidth = int(self.serialCon.readline().decode('utf-8'))
-                self.displayHight = int(self.serialCon.readline().decode('utf-8'))
+    def __readLines(self):
+        readThread = threading.Thread(target=self.__readSer)
+        readThread.isDaemon()
+        readThread.start()
+
+    def __readSer(self):
+        while self.__checkSer():
+            try:
+                self.received.put(self.serialCon.readline())
+                print(self.received.get())
+            except:
+                print("Couldn't read Serial")
+
+    def __getDisplay(self):
+        while self.__checkSer():
+            self.__writeSer('ACK')
+            if b'SOGENUGACK' in self.serialCon.readline():
+                self.displayWidth = int(self.serialCon.readline().decode('utf-8')) - 1
+                self.displayHight = int(self.serialCon.readline().decode('utf-8')) - 1
                 break
 
-    def writeSer(self, msg):
-        self.checkSer()
-        try:
+    def __writeSer(self, msg):
+        if self.__checkSer():
             self.serialCon.write(msg.encode('utf-8'))
-        except:
+        else:
             print("Could not write to Serial")
 
-    def readSer(self):
-        self.checkSer()
-        try:
-            rec = self.serialCon.readline()
-            print(rec)
-            return rec
-        except:
-            print("Couldn't read Serial")
-
-    def checkSer(self):
-        try:
-            return self.serialCon.is_open
-        except:
+    def __checkSer(self):
+        if self.serialCon.is_open:
+            return 1
+        else:
             print("Connection lost")
+            return 0
 
-    def closeSer(self):
-        try:
-            self.serialCon.close()
-        except:
-            print("Serial could not be closed")
+    def pixelOn(self, positions, hex):
+        # Array von Positionen oder lieber komplettes 2D array? --> wäre vllt für die spiele einfacher muss man ja nur das komplette Array pushen
+        # Absprache mit Dominik
+        for pixel in positions:
+            self.__writeSer('1x{}x{}x{};'.format(pixel[0], pixel[1], hex))
+
+    def pixelOff(self):
+        return 1
 
 
 if __name__ == '__main__':
-    disp = display('COM3', 19200)
-    disp.writeSer('23,3')
-    disp.readSer()
-    disp.readSer()
+    disp = Display('COM3', 19200)
+    disp.pixelOn([[1, 2], [3, 1], [4, 1]], 'FFFFFF')
+    sleep(10)

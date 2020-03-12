@@ -1,5 +1,3 @@
-#include <Adafruit_NeoPixel.h>
-
 #define displayWidth 10
 #define displayHight 20
 #define baudrate 19200
@@ -38,20 +36,14 @@ void loop() {
 
     /*
      * HIER DEIN CODE
-     * 
-     * 
+     * soll vllt den Display immer updaten
+     * und danach vllt ein Delay ?
      */
 
 
     
   
 }
-
-void toDisplay(){
-  //HIER DEIN CODE
-  //kannst ja noch weitere Funktionen hinzufügen fallst du brauchst
-}
-
 
 
 void establishConnection(){
@@ -61,7 +53,7 @@ void establishConnection(){
         Serial.println("SYN");
         delay(100);
     }
-    Serial.println("ACK");
+    Serial.println("SOGENUGACK");
   }
 }
 
@@ -71,28 +63,52 @@ void exchangeInfo(){
   Serial.println(String(displayHight));
 }
 
-void parseSerial(){
-  if(Serial.parseInt() == 0){
-    short x = Serial.parseInt();
-    short y = Serial.parseInt();
-    short r = Serial.parseInt();
-    short g = Serial.parseInt();
-    short b = Serial.parseInt();
-  }
-  //Bitte erweitern
-  
-  
-
-}
-
-void findID(short x, short y){
-  //--> FINDE die ID anhand von x und y Positionen
-  
-  }
-
-
 bool checkConnection(){
   //Für Überprüfung 
   
   return true;
 }
+
+void parseSerial(){
+    bool on_off = Serial.parseInt();
+    short x = Serial.parseInt();
+    short y = Serial.parseInt();
+    String hex = "0";
+    hex.concat(Serial.readStringUntil(';'));
+    
+
+    Serial.println(on_off);
+    Serial.println(x);
+    Serial.println(y);
+    Serial.println(hex);
+
+
+    /*--> bekommt von Display Klasse : 
+     * on_off (true ein / false aus)
+     * x Position (sollte zwischen 0 und max width sein)
+     * y Postion (sollte zwischen 0 und max hight sein)
+     * hex String = 0x... wird auch schon richtig zusammengefügt
+     * 
+     * So hier also bitte noch den aufruf für die findID Funktion 
+     * und danach natürlich die positionen mit extra Funktion/en in das Display Array einfügen
+     * bzw löschen
+     */
+
+
+
+
+  
+  
+
+}
+/*
+ * Hier deine Add Pixel Delete Pixel Funktion/en
+ * 
+ * 
+ */
+
+void findID(short x, short y){
+  //--> FINDE die ID anhand von x und y Positionen
+  //Bitte machen
+  
+  }
