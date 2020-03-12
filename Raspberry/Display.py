@@ -17,7 +17,6 @@ class Display:
         self.received = Queue()
         self.__getDisplay()
         self.__readLines()
-        # self.__writeSer('1 10 5 0x555555')
 
     def __readLines(self):
         readThread = threading.Thread(target=self.__readSer)
