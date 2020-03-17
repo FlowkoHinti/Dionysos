@@ -58,11 +58,13 @@ class Display:
         for pixel in positions:
             self.__writeSer('1x{}x{}x{};'.format(pixel[0], pixel[1], hex))
 
-    def pixelOff(self):
-        return 1
+    def pixelOff(self, positions):
+        for pixel in positions:
+            self.__writeSer('0x{}x{}x000000;'.format(pixel[0], pixel[1]))
 
 
 if __name__ == '__main__':
     disp = Display('COM3', 19200)
     disp.pixelOn([[1, 2], [3, 1], [4, 1]], 'FFFFFF')
+    # disp.pixelOff([1, 2])
     sleep(10)
