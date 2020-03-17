@@ -8,6 +8,7 @@ class Display:
     def __init__(self, port, baudrate):
         try:
             self.serialCon = serial.Serial(port, baudrate)
+            sleep(2)  # reset wenn Serial geöffnet wird
         except:
             print("Couldn't open Serial port")
 
