@@ -1,6 +1,5 @@
 import serial
 import threading
-from queue import Queue
 from time import sleep
 
 
@@ -14,7 +13,7 @@ class Display:
 
         self.displayWidth = 0
         self.displayHight = 0
-        self.received = Queue()
+        self.mypixels = []
         self.__getDisplay()
         self.__readLines()
 
@@ -25,11 +24,7 @@ class Display:
 
     def __readSer(self):
         while self.__checkSer():
-            try:
-                self.received.put(self.serialCon.readline())
-                print(self.received.get())
-            except:
-                print("Couldn't read Serial")
+            print(self.serialCon.readline())
 
     def __getDisplay(self):
         while self.__checkSer():
@@ -52,11 +47,9 @@ class Display:
             print("Connection lost")
             return 0
 
-    def pixelOn(self, positions, hex):
-        # Array von Positionen oder lieber komplettes 2D array? --> wäre vllt für die spiele einfacher muss man ja nur das komplette Array pushen
-        # Absprache mit Dominik
+    def pixelOn(self, positions):
         for pixel in positions:
-            self.__writeSer('1x{}x{}x{};'.format(pixel[0], pixel[1], hex))
+            self.__writeSer('1x{}x{}{};'.format(pixel[0], pixel[1], hex(pixel[3])[2:]))
 
     def pixelOff(self, positions):
         for pixel in positions:
@@ -65,6 +58,6 @@ class Display:
 
 if __name__ == '__main__':
     disp = Display('COM3', 19200)
-    disp.pixelOn([[1, 2], [3, 1], [4, 1]], 'FFFFFF')
-    # disp.pixelOff([1, 2])
+    disp.pixelOn([[1, 2, 1, 16777215], [3, 1, 1, 16777215], [4, 1, 1, 16777215]])
+    disp.pixelOff([[1, 2, 1]])
     sleep(10)
