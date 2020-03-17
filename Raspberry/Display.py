@@ -50,11 +50,16 @@ class Display:
 
     def pixelOn(self, positions):
         for pixel in positions:
-            self.__writeSer('1x{}x{}{};'.format(pixel[0], pixel[1], hex(pixel[3])[2:]))
+            if pixel not in self.mypixels:
+                self.mypixels.append(pixel)
+                self.__writeSer('1x{}x{}{};'.format(pixel[0], pixel[1], hex(pixel[3])[2:]))
 
     def pixelOff(self, positions):
+        # --> einspeichern nochmal überlegen bzw. rauslöschen
         for pixel in positions:
-            self.__writeSer('0x{}x{}x000000;'.format(pixel[0], pixel[1]))
+            if pixel in self.mypixels:
+                self.__writeSer('0x{}x{}x000000;'.format(pixel[0], pixel[1]))
+                self.mypixels.remove(pixel)
 
 
 if __name__ == '__main__':
