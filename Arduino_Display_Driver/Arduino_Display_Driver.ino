@@ -70,14 +70,12 @@ bool checkConnection(){
 }
 
 void parseSerial(){
-    bool on_off = Serial.parseInt();
     short x = Serial.parseInt();
     short y = Serial.parseInt();
     String hex = "0";
     hex.concat(Serial.readStringUntil(';'));
     
 
-    Serial.println(on_off);
     Serial.println(x);
     Serial.println(y);
     Serial.println(hex);

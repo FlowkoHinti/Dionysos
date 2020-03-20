@@ -49,4 +49,5 @@ if __name__ == '__main__':
                           [9]])
 
     dy.add_pixel(vector)
+    # dy.del_pixel(vector)
     dy.print_pixels()

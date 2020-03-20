@@ -1,5 +1,6 @@
 import serial
 import threading
+import numpy
 from time import sleep
 
 
@@ -46,10 +47,8 @@ class Display:
             print("Connection lost")
             return False
 
-    def pixel_on(self, positions):
-        for pixel in positions:
-            self.__write_ser('1x{}x{}{};'.format(pixel[0], pixel[1], hex(pixel[3])[2:]))
+    def pixel_on(self, pixel):
+        self.__write_ser('{}x{}{};'.format(pixel[0][0], pixel[1][0], hex(pixel[3][0])[1:]))
 
-    def pixel_off(self, positions):
-        for pixel in positions:
-            self.__write_ser('0x{}x{}x000000;'.format(pixel[0], pixel[1]))
+    def pixel_off(self, pixel):
+        self.__write_ser('{}x{}x000000;'.format(pixel[0][0], pixel[1][0]))
