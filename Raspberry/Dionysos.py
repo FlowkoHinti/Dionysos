@@ -13,8 +13,12 @@ class Dionysos:
         self.__del_pos = []
 
     def add_pixel(self, pixel_vector):
-        if self.__check_pixel(pixel_vector):
-            self.screen.append(pixel_vector)
+        if 0 <= pixel_vector[0, 0] < self.__display.display_width and 0 <= pixel_vector[
+            1, 0] < self.__display.display_hight:  # probleme
+            if self.__check_pixel(pixel_vector):
+                self.screen.append(pixel_vector)
+        else:
+            print("Out of Display-boundaries")
 
     def del_pixel(self, pixel_vector):
         if not self.__check_pixel(pixel_vector):
@@ -22,13 +26,12 @@ class Dionysos:
             self.__del_pos.append(pixel_vector)
 
     def __check_pixel(self, pixel_vector):
-        if pixel_vector not in self.screen:
+        if pixel_vector not in self.screen:  # probleme
             return True
         else:
             return False
 
     def print_pixels(self):
-
         for delpos in self.__del_pos:
             self.__display.pixel_off(delpos)
         self.__del_pos.clear()
@@ -38,16 +41,38 @@ class Dionysos:
                 self.__display.pixel_on(pixel)
         self.__screen_old = self.screen.copy()
 
+    def clear_screen(self):
+        for pixel in self.screen:
+            self.del_pixel(pixel)
+        self.print_pixels()
+
 
 if __name__ == '__main__':
     dy = Dionysos()
 
-    # --> Display Klasse auf numpy Vektoren umschreiben
     vector = numpy.array([[4],
                           [2],
                           [1],
                           [9]])
 
+    vector1 = numpy.array([[2],
+                           [3],
+                           [1],
+                           [167200]])
+
+    vector2 = numpy.array([[22],
+                           [3],
+                           [1],
+                           [167200]])
+
+    vector3 = numpy.array([[2],
+                           [3],
+                           [1],
+                           [167200]])
+
     dy.add_pixel(vector)
-    # dy.del_pixel(vector)
+    dy.add_pixel(vector1)
+    dy.add_pixel(vector2)
+    dy.add_pixel(vector3)
+
     dy.print_pixels()
