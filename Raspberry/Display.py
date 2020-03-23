@@ -48,7 +48,7 @@ class Display:
             return False
 
     def pixel_on(self, pixel):
-        self.__write_ser('{}x{}{};'.format(pixel[0, 0], pixel[1, 0], hex(pixel[3, 0])[1:]))
+        self.__write_ser('{}x{}{};'.format(pixel[0], pixel[1], hex(pixel[2])[1:]))
 
     def pixel_off(self, pixel):
-        self.__write_ser('{}x{}x0;'.format(pixel[0, 0], pixel[1, 0]))
+        self.__write_ser('{}x{}x0;'.format(pixel[0], pixel[1]))
