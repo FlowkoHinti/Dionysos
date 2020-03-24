@@ -2,15 +2,14 @@
 from Raspberry import Display
 from Raspberry import Game
 import numpy
+from pynput import keyboard
 
 
 class Dionysos:
-
-    def __init__(self):
-        self.__display = Display.Display('COM3', 19200)
-        self.screen = []  # --> all pixels x/y/c
-        self.__screen_old = []
-        self.__del_pos = []
+    __display = Display.Display('COM3', 19200)
+    screen = []  # --> all pixels x/y/c
+    __screen_old = []  # --> for changes
+    __del_pos = []  # --> to delete
 
     @staticmethod
     def __parse_format(pixel_vector):
@@ -52,14 +51,45 @@ class Dionysos:
         self.print_pixels()
 
 
+class Input:
+    # Startet automatisch ???
+    def __on_press(key):
+        try:
+            print('alphanumeric key {0} pressed'.format(
+                key.char))
+        except AttributeError:
+            print('special key {0} pressed'.format(
+                key))
+
+    def __on_release(key):
+        print('{0} released'.format(
+            key))
+        if key == keyboard.Key.esc:
+            # Stop listener
+            return False
+
+    # Collect events until released
+    def listener_start(self):
+        with keyboard.Listener(
+                on_press=__on_press,  # privat
+                on_release=__on_release) as listener:  # privat
+            listener.join()
+
+        # ...or, in a non-blocking fashion:
+        listener = keyboard.Listener(
+            on_press=__on_press,  # privat
+            on_release=__on_release)  # privat
+        listener.start()
+
+
 if __name__ == '__main__':
     dy = Dionysos()
-
+    i = Input()
     vector = numpy.array([[4], [2], [1], [9]])
 
-    vector1 = numpy.array([[2], [3], [1], [167200]])
+    vector1 = numpy.array([[2], [3], [1], [2672800]])
 
-    vector2 = numpy.array([[22], [3], [1], [167200]])
+    vector2 = numpy.array([[19], [3], [1], [167200]])
 
     vector3 = numpy.array([[2], [3], [1], [167200]])
 
@@ -69,12 +99,3 @@ if __name__ == '__main__':
     # dy.add_pixel(vector3)
 
     dy.print_pixels()
-
-    # thread.start input
-    # thread handed over while initializing objects to use the raw input
-
-
-def input():
-    pass
-    # reads the keyboard/controller input
-    # is started as a thread and returns keypressed
