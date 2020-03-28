@@ -52,7 +52,6 @@ class Dionysos:
 
 
 class Input:
-    # Startet automatisch ???
     def __on_press(key):
         try:
             print('alphanumeric key {0} pressed'.format(
@@ -68,23 +67,25 @@ class Input:
             # Stop listener
             return False
 
+    listener = keyboard.Listener(
+        on_press=__on_press,
+        on_release=__on_release)
+
     # Collect events until released
     def listener_start(self):
-        with keyboard.Listener(
-                on_press=__on_press,  # privat
-                on_release=__on_release) as listener:  # privat
-            listener.join()
 
         # ...or, in a non-blocking fashion:
-        listener = keyboard.Listener(
-            on_press=__on_press,  # privat
-            on_release=__on_release)  # privat
-        listener.start()
+        self.listener.isDaemon()
+        self.listener.start()
+
+    def stop_listener(self):
+        self.listener.stop()
 
 
 if __name__ == '__main__':
     dy = Dionysos()
     i = Input()
+    i.listener_start()
     vector = numpy.array([[4], [2], [1], [9]])
 
     vector1 = numpy.array([[2], [3], [1], [2672800]])
