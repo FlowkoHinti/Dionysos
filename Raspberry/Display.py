@@ -12,7 +12,7 @@ class Display:
         try:
             self.serialCon = serial.Serial(port, baudrate)
             sleep(2)  # reset wenn Serial geöffnet wird
-        except:
+        except Exception:
             print("Couldn't open Serial port")
         self.__get_display()
         self.__read_lines()

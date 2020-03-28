@@ -52,40 +52,50 @@ class Dionysos:
 
 
 class Input:
-    def __on_press(key):
-        try:
-            print('alphanumeric key {0} pressed'.format(
-                key.char))
-        except AttributeError:
-            print('special key {0} pressed'.format(
-                key))
+    __key = None
+    __allowed = []
+    __listener = None
 
-    def __on_release(key):
-        print('{0} released'.format(
-            key))
+    def get_key(self):
+        return self.__key
+
+    def __on_press(self, key):
+        try:
+            if key.char in self.__allowed:
+                self.__key = key.char
+                print('alphanumeric key {0} pressed'.format(key))
+        except AttributeError:
+            print('special key {0} pressed'.format(key))
+
+    def __on_release(self, key):
         if key == keyboard.Key.esc:
             # Stop listener
             return False
 
-    listener = keyboard.Listener(
-        on_press=__on_press,
-        on_release=__on_release)
+    def allowed_keys(self, keys):
+        # Adds all allowed keys for an illustration
+        self.__allowed.clear()
+        for key in keys:
+            self.__allowed.append(key)
 
-    # Collect events until released
     def listener_start(self):
-
-        # ...or, in a non-blocking fashion:
-        self.listener.isDaemon()
-        self.listener.start()
+        try:
+            self.__listener = keyboard.Listener(
+                on_press=self.__on_press,
+                on_release=self.__on_release)
+            self.__listener.start()
+        except Exception:
+            print("Could not start listener")
 
     def stop_listener(self):
-        self.listener.stop()
+        self.__listener.stop()
 
 
 if __name__ == '__main__':
     dy = Dionysos()
     i = Input()
     i.listener_start()
+    i.allowed_keys(["e", 'a'])
     vector = numpy.array([[4], [2], [1], [9]])
 
     vector1 = numpy.array([[2], [3], [1], [2672800]])
@@ -98,5 +108,4 @@ if __name__ == '__main__':
     dy.add_pixel(vector1)
     # dy.add_pixel(vector2)
     # dy.add_pixel(vector3)
-
     dy.print_pixels()
