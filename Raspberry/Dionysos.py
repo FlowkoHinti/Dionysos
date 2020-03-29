@@ -96,6 +96,7 @@ if __name__ == '__main__':
     i = Input()
     i.listener_start()
     i.allowed_keys(["e", 'a'])
+
     vector = numpy.array([[4], [2], [1], [9]])
 
     vector1 = numpy.array([[2], [3], [1], [2672800]])
