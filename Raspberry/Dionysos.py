@@ -1,26 +1,28 @@
 # Elternklasse für die Spiele
-from Raspberry import Display
-from Raspberry import Game
-import numpy
+from Raspberry import Display, Menu, Snake, Tetris
 from pynput import keyboard
 
 
 class Dionysos:
-    __display = Display.Display('COM3', 19200)
     screen = []  # --> all pixels x/y/c
     __screen_old = []  # --> for changes
     __del_pos = []  # --> to delete
+
+    def __init__(self):
+        self.__display = Display.Display('COM3', 19200)
 
     @staticmethod
     def __parse_format(pixel_vector):
         return [pixel_vector[0][0], pixel_vector[1][0], pixel_vector[3][0]]
 
     def add_pixel(self, pixel_vector):
+        # --> other format than vector?
         if self.__check_pixel(pixel_vector):
             pixel = self.__parse_format(pixel_vector)
             self.screen.append(pixel)
 
     def del_pixel(self, pixel_vector):
+        # --> other format than vector?
         if not self.__check_pixel(pixel_vector):
             pixel = self.__parse_format(pixel_vector)
             self.screen.remove(pixel)
@@ -50,6 +52,8 @@ class Dionysos:
             self.del_pixel(pixel)
         self.print_pixels()
 
+    def draw_letter(self, letter, start_x, start_y):
+        pass
 
 class Input:
     __key = None
@@ -62,10 +66,21 @@ class Input:
     def __on_press(self, key):
         try:
             if key.char in self.__allowed:
-                self.__key = key.char
+                self.__key = key.char.upper()
                 print('alphanumeric key {0} pressed'.format(key))
+
         except AttributeError:
-            print('special key {0} pressed'.format(key))
+            if key == keyboard.Key.up:
+                self.__on_press(keyboard.KeyCode.from_char('w'))
+            elif key == keyboard.Key.down:
+                self.__on_press(keyboard.KeyCode.from_char('s'))
+            elif key == keyboard.Key.left:
+                self.__on_press(keyboard.KeyCode.from_char('d'))
+            elif key == keyboard.Key.right:
+                self.__on_press(keyboard.KeyCode.from_char('a'))
+            elif key == keyboard.Key.enter:
+                self.__on_press(keyboard.KeyCode.from_char('#'))  # ENTER = #
+            #print('special key {0} pressed'.format(key))
 
     def __on_release(self, key):
         if key == keyboard.Key.esc:
@@ -95,18 +110,27 @@ if __name__ == '__main__':
     dy = Dionysos()
     i = Input()
     i.listener_start()
-    i.allowed_keys(["e", 'a'])
+    # i.allowed_keys(['e', 'a', 'w', 's', 'd', '#']) #up/down/right/left arrows = w/s/d/a
 
-    vector = numpy.array([[4], [2], [1], [9]])
+    men = Menu.Menu(i, dy)
+    men.start()
+    i.allowed_keys(['w', 's', '#'])
+    while (i.get_key() != '#'):
+        men.move_cursor(i.get_key())
+        pass
 
-    vector1 = numpy.array([[2], [3], [1], [2672800]])
+    # vector = numpy.array([[4], [2], [1], [9]])
 
-    vector2 = numpy.array([[19], [3], [1], [167200]])
+    # vector1 = numpy.array([[2], [3], [1], [2672800]])
 
-    vector3 = numpy.array([[2], [3], [1], [167200]])
+    # vector2 = numpy.array([[19], [3], [1], [167200]])
 
-    dy.add_pixel(vector)
-    dy.add_pixel(vector1)
+    # vector3 = numpy.array([[2], [3], [1], [167200]])
+
+    # dy.add_pixel(vector)
+    # dy.add_pixel(vector1)
     # dy.add_pixel(vector2)
     # dy.add_pixel(vector3)
     dy.print_pixels()
+
+    #i.stop_listener()
