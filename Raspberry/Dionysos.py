@@ -52,11 +52,15 @@ class Dionysos:
             self.del_pixel(pixel)
         self.print_pixels()
 
+    def close_Ser(self):
+        self.__display.se
+
     def draw_letter(self, letter, start_x, start_y):
         pass
 
+
 class Input:
-    __key = None
+    __key = ''
     __allowed = []
     __listener = None
 
@@ -106,18 +110,28 @@ class Input:
         self.__listener.stop()
 
 
+def menu():
+    pass
+
+
+def snake():
+    pass
+
+
+def tetris():
+    pass
+
+
 if __name__ == '__main__':
     dy = Dionysos()
     i = Input()
     i.listener_start()
+    i.allowed_keys(['w'])
+
     # i.allowed_keys(['e', 'a', 'w', 's', 'd', '#']) #up/down/right/left arrows = w/s/d/a
 
-    men = Menu.Menu(i, dy)
-    men.start()
-    i.allowed_keys(['w', 's', '#'])
-    while (i.get_key() != '#'):
-        men.move_cursor(i.get_key())
-        pass
+    # men = Menu.Menu(dy)
+    # men.start()
 
     # vector = numpy.array([[4], [2], [1], [9]])
 

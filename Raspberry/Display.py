@@ -17,6 +17,9 @@ class Display:
         self.__get_display()
         self.__read_lines()
 
+    def close_serial(self):
+        self.serialCon.close()
+
     def __read_lines(self):
         readThread = threading.Thread(target=self.__read_ser)
         readThread.isDaemon()
