@@ -1,6 +1,5 @@
 from numpy import array
 from Raspberry import Dionysos as Game
-import threading
 
 
 class Menu:
@@ -23,7 +22,6 @@ class Menu:
             self.move_cursor(self.input.get_key())
 
         self.input.stop_listener()
-        threading.Event.set()
 
     def get_pos(self):
         return self.__cursor_pos

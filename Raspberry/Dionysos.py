@@ -53,7 +53,7 @@ class Dionysos:
         self.print_pixels()
 
     def close_Ser(self):
-        self.__display.se
+        self.__display.serialCon.close()
 
     def draw_letter(self, letter, start_x, start_y):
         pass
