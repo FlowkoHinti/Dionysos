@@ -111,14 +111,17 @@ class Input:
 
 
 def menu():
+    # führt das Menü als Subprocess aus und wartet bis der Prozess fertig ist --> Möglichkeit Auswahl zurück zu pipen?
     pass
 
 
 def snake():
+    #auführen, warten bis fertig
     pass
 
 
 def tetris():
+    #ausführen, warten bis fertig
     pass
 
 
