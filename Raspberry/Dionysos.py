@@ -138,18 +138,15 @@ if __name__ == '__main__':
     # men = Menu.Menu(dy)
     # men.start()
 
-    vector = numpy.array([[2], [1], [1], [16711680]])
-
-    # vector1 = numpy.array([[2], [3], [1], [2672800]])
-
-    # vector2 = numpy.array([[19], [3], [1], [167200]])
-
-    # vector3 = numpy.array([[2], [3], [1], [167200]])
+    vector = numpy.array([[2], [1], [1], [255]])
+    vector1 = numpy.array([[2], [2], [1], [65280]])
+    #vector2 = numpy.array([[2], [3], [1], [16711680]])
+    #vector3 = numpy.array([[2], [5], [1], [65280]])
 
     dy.add_pixel(vector)
-    # dy.add_pixel(vector1)
-    # dy.add_pixel(vector2)
-    # dy.add_pixel(vector3)
+    dy.add_pixel(vector1)
+    #dy.add_pixel(vector2)
+    #dy.add_pixel(vector3)
     dy.print_pixels()
 
     # i.stop_listener()
