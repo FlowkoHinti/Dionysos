@@ -1,6 +1,7 @@
 # Elternklasse für die Spiele
 from Raspberry import Display, Menu, Snake, Tetris
 from pynput import keyboard
+import subprocess
 
 
 class Dionysos:
@@ -113,7 +114,7 @@ class Input:
 def menu():
     # führt das Menü als Subprocess aus und wartet bis der Prozess fertig ist --> Möglichkeit Auswahl zurück zu pipen?
     pass
-
+    test = subprocess.Popen
 
 def snake():
     #auführen, warten bis fertig
@@ -127,9 +128,11 @@ def tetris():
 
 if __name__ == '__main__':
     dy = Dionysos()
-    i = Input()
-    i.listener_start()
-    i.allowed_keys(['w'])
+
+    subprocess.run()
+    # i = Input()
+    # i.listener_start()
+    # i.allowed_keys(['w'])
 
     # i.allowed_keys(['e', 'a', 'w', 's', 'd', '#']) #up/down/right/left arrows = w/s/d/a
 
