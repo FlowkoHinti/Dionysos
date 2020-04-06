@@ -39,6 +39,7 @@ class Display:
 
     def __write_ser(self, msg):
         if self.__check_ser():
+            sleep(0.05)
             self.serialCon.write(msg.encode('utf-8'))
         else:
             print("Could not write to Serial")
@@ -51,7 +52,7 @@ class Display:
             return False
 
     def pixel_on(self, pixel):
-        self.__write_ser('{}x{}x{}x'.format(pixel[0], pixel[1], pixel[2]))
+        self.__write_ser('{}x{}x{};'.format(pixel[0], pixel[1], pixel[2]))
 
     def pixel_off(self, pixel):
         self.__write_ser('{}x{}x0;'.format(pixel[0], pixel[1]))
