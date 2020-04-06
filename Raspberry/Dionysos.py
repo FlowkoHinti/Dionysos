@@ -138,7 +138,7 @@ if __name__ == '__main__':
     # men = Menu.Menu(dy)
     # men.start()
 
-    vector = numpy.array([[2], [0], [1], [16711680]])
+    vector = numpy.array([[2], [1], [1], [16711680]])
 
     # vector1 = numpy.array([[2], [3], [1], [2672800]])
 

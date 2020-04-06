@@ -46,6 +46,10 @@ void loop() {
       parseSerial();
     }
 
+  FastLED.show();
+  delay(17);
+
+
 /*-------------------------------------------------------------------
 
   // Turn the LED on, then pause
@@ -96,17 +100,16 @@ bool checkConnection(){
 void parseSerial(){
     short x = Serial.parseInt();
     short y = Serial.parseInt();
-    String hex = "0";
-    hex.concat(Serial.readStringUntil(';'));
+    long color = Serial.parseInt();
+    //hex.concat(Serial.readStringUntil(';'));
 
     Serial.println(x);
     Serial.println(y);
-    Serial.println(hex);
+    Serial.println(color);
 
-    long color = strtol(hex.c_str(), NULL, 16);
+    //long color = strtol(hex.c_str(), NULL, 16);
 
     leds[findID(x,y)] = color;
-    FastLED.show();
 
     /*--> bekommt von Display Klasse :
      * on_off (true ein / false aus)
