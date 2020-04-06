@@ -2,6 +2,7 @@
 from Raspberry import Display, Menu, Snake, Tetris
 from pynput import keyboard
 import subprocess
+import numpy
 
 
 class Dionysos:
@@ -128,8 +129,6 @@ def tetris():
 
 if __name__ == '__main__':
     dy = Dionysos()
-
-    subprocess.run()
     # i = Input()
     # i.listener_start()
     # i.allowed_keys(['w'])
@@ -139,7 +138,7 @@ if __name__ == '__main__':
     # men = Menu.Menu(dy)
     # men.start()
 
-    # vector = numpy.array([[4], [2], [1], [9]])
+    vector = numpy.array([[2], [0], [1], [16711680]])
 
     # vector1 = numpy.array([[2], [3], [1], [2672800]])
 
@@ -147,10 +146,10 @@ if __name__ == '__main__':
 
     # vector3 = numpy.array([[2], [3], [1], [167200]])
 
-    # dy.add_pixel(vector)
+    dy.add_pixel(vector)
     # dy.add_pixel(vector1)
     # dy.add_pixel(vector2)
     # dy.add_pixel(vector3)
     dy.print_pixels()
 
-    #i.stop_listener()
+    # i.stop_listener()
