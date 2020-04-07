@@ -11,6 +11,7 @@ void establishConnection();
 void exchangeInfo();
 bool checkConnection();
 void parseSerial();
+bool x = false;
 
 
 void setup() {
@@ -28,9 +29,7 @@ void setup() {
 }
 
 
-void loop() {
-  boolean x;
-  
+void loop() {  
   while (Serial.available() > 0){
       parseSerial();
       if (x == false){
