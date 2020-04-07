@@ -21,6 +21,9 @@ void setup() {
   for (int i = 0; i > NUM_LEDS; ++i) {
      leds[i] = CRGB::Black;
   }
+
+  
+  FastLED.setBrightness(25);
   FastLED.show();
 
   Serial.begin(baudrate);
@@ -73,7 +76,7 @@ void parseSerial(){
     Serial.println(color);
 
     leds[findID(x,y)] = color;
-}
+    }
 
 
 short findID(short x, short y){
