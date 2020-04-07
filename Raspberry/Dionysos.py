@@ -3,7 +3,7 @@ from Raspberry import Display, Menu, Snake, Tetris
 from pynput import keyboard
 import subprocess
 import numpy
-
+import time
 
 class Dionysos:
     screen = []  # --> all pixels x/y/c
@@ -51,7 +51,8 @@ class Dionysos:
 
     def clear_screen(self):
         for pixel in self.screen:
-            self.del_pixel(pixel)
+            self.screen.remove(pixel)
+            self.__del_pos.append(pixel)
         self.print_pixels()
 
     def close_Ser(self):
@@ -162,5 +163,6 @@ if __name__ == '__main__':
     dy.add_pixel(vector9)
     dy.add_pixel(vector10)"""
     dy.print_pixels()
-
+    time.sleep(2)
+    dy.clear_screen()
     # i.stop_listener()
