@@ -39,7 +39,7 @@ class Display:
 
     def __write_ser(self, msg):
         if self.__check_ser():
-            sleep(0.05)
+            #sleep(0.05)
             self.serialCon.write(msg.encode('utf-8'))
         else:
             print("Could not write to Serial")

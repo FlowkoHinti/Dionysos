@@ -29,13 +29,19 @@ void setup() {
 
 
 void loop() {
-  if (Serial.available() > 0){
+  boolean x;
+  
+  while (Serial.available() > 0){
       parseSerial();
+      if (x == false){
+        x = true;
+      }
     }
 
-  FastLED.show();
-  //"refresh rate"
-  delay(17);
+    if (x == true){
+      FastLED.show();
+      x = false;
+    }
 }
 
 
@@ -72,5 +78,9 @@ void parseSerial(){
 
 
 short findID(short x, short y){
-  return (x*displayHight + y);
+  if (x%2 != 0){
+    return ((((x+1)*displayHight) -y)-1);
+  } else {
+    return ((x*displayHight) + y);
+  }
 }
