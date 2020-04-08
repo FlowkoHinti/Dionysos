@@ -139,29 +139,31 @@ if __name__ == '__main__':
     # men = Menu.Menu(dy)
     # men.start()
 
-    vector = numpy.array([[0], [0], [1], [250]])
-    vector1 = numpy.array([[1], [0], [1], [57088]])
-    vector2 = numpy.array([[2], [0], [1], [14811136]])
-    vector3 = numpy.array([[3], [0], [1], [5635968]])
-    vector4 = numpy.array([[4], [0], [1], [12451968]])
-    """vector5 = numpy.array([[3], [2], [1], [65280]])
-    vector6 = numpy.array([[3], [3], [1], [16711680]])
-    vector7 = numpy.array([[3], [4], [1], [16753664]])
-    vector8 = numpy.array([[4], [1], [1], [255]])
-    vector9 = numpy.array([[4], [2], [1], [65280]])
-    vector10 = numpy.array([[4], [3], [1], [16711680]])"""
+    vector = numpy.array([[0], [1], [1], [16711680]])
+    vector1 = numpy.array([[1], [1], [1], [255]])
+    vector2 = numpy.array([[2], [2], [1], [16711680]])
+    vector3 = numpy.array([[3], [3], [1], [255]])
+    vector4 = numpy.array([[4], [4], [1], [16711680]])
+
+    vector5 = numpy.array([[3], [6], [1], [255]])
+    vector6 = numpy.array([[2], [7], [1], [16711680]])
+    vector7 = numpy.array([[1], [8], [1], [255]])
+    vector8 = numpy.array([[0], [8], [1], [16711680]])
+
+    vector9 = numpy.array([[4], [5], [1], [16711680]])
+    """vector10 = numpy.array([[4], [3], [1], [16711680]])"""
 
     dy.add_pixel(vector)
     dy.add_pixel(vector1)
     dy.add_pixel(vector2)
     dy.add_pixel(vector3)
     dy.add_pixel(vector4)
-    """dy.add_pixel(vector5)
+    dy.add_pixel(vector5)
     dy.add_pixel(vector6)
     dy.add_pixel(vector7)
     dy.add_pixel(vector8)
     dy.add_pixel(vector9)
-    dy.add_pixel(vector10)"""
+    """dy.add_pixel(vector10)"""
     dy.print_pixels()
     time.sleep(2)
     dy.clear_screen()
