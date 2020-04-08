@@ -26,8 +26,7 @@ class Display:
         readThread.start()
 
     def __read_ser(self):
-        while self.__check_ser():
-            print(self.serialCon.readline())
+        print(self.serialCon.readline())
 
     def __get_display(self):
         while self.__check_ser():
@@ -38,11 +37,8 @@ class Display:
                 break
 
     def __write_ser(self, msg):
-        if self.__check_ser():
             #sleep(0.05)
             self.serialCon.write(msg.encode('utf-8'))
-        else:
-            print("Could not write to Serial")
 
     def __check_ser(self):
         if self.serialCon.is_open:
@@ -52,7 +48,13 @@ class Display:
             return False
 
     def pixel_on(self, pixel):
-        self.__write_ser('{}x{}x{};'.format(pixel[0], pixel[1], pixel[2]))
+        # self.__write_ser('{};{};{};'.format(pixel[0], pixel[1], pixel[2]))
+        self.__write_ser('x{};'.format(pixel[0]))
+        self.__write_ser('y{};'.format(pixel[1]))
+        self.__write_ser('c{};'.format(pixel[2]))
 
     def pixel_off(self, pixel):
-        self.__write_ser('{}x{}x0;'.format(pixel[0], pixel[1]))
+        # self.__write_ser('{};{};0;'.format(pixel[0], pixel[1]))
+        self.__write_ser('x{};'.format(pixel[0]))
+        self.__write_ser('y{};'.format(pixel[1]))
+        self.__write_ser('c0;')

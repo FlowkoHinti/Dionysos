@@ -50,9 +50,10 @@ class Dionysos:
         self.__screen_old = self.screen.copy()
 
     def clear_screen(self):
+        # vllt nur c an Arduino und screen löschen
         for pixel in self.screen:
-            self.screen.remove(pixel)
             self.__del_pos.append(pixel)
+        self.screen.clear()
         self.print_pixels()
 
     def close_Ser(self):
@@ -139,7 +140,7 @@ if __name__ == '__main__':
     # men = Menu.Menu(dy)
     # men.start()
 
-    vector = numpy.array([[0], [1], [1], [16711680]])
+    vector = numpy.array([[0], [0], [1], [16711680]])
     vector1 = numpy.array([[1], [1], [1], [255]])
     vector2 = numpy.array([[2], [2], [1], [16711680]])
     vector3 = numpy.array([[3], [3], [1], [255]])
@@ -148,7 +149,7 @@ if __name__ == '__main__':
     vector5 = numpy.array([[3], [6], [1], [255]])
     vector6 = numpy.array([[2], [7], [1], [16711680]])
     vector7 = numpy.array([[1], [8], [1], [255]])
-    vector8 = numpy.array([[0], [8], [1], [16711680]])
+    vector8 = numpy.array([[0], [9], [1], [16711680]])
 
     vector9 = numpy.array([[4], [5], [1], [16711680]])
     """vector10 = numpy.array([[4], [3], [1], [16711680]])"""

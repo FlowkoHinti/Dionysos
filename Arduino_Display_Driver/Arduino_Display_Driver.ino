@@ -67,16 +67,15 @@ void exchangeInfo(){
 
 
 void parseSerial(){
-    short x = Serial.parseInt();
-    short y = Serial.parseInt();
-    long color = Serial.parseInt();
-
+    short x = Serial.parseInt(SKIP_ALL,';');
+    short y = Serial.parseInt(SKIP_ALL,';');
+    long color = Serial.parseInt(SKIP_ALL,';');
     Serial.println(x);
     Serial.println(y);
     Serial.println(color);
 
-    leds[findID(x,y)] = color;
-    }
+    leds[findID(x,y)] = color;    
+}
 
 
 short findID(short x, short y){
