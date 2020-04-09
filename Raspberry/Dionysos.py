@@ -1,9 +1,13 @@
 # Elternklasse für die Spiele
-from Raspberry import Display, Menu, Snake, Tetris
+from Raspberry.Visualisation.Display import Display
+from Raspberry.Visualisation.Menu import Menu
+from Raspberry.Visualisation.Snake import Snake
+# from Raspberry.Visualisation.Tetris import Tetris
 from pynput import keyboard
 import subprocess
 import numpy
 import time
+
 
 class Dionysos:
     screen = []  # --> all pixels x/y/c
@@ -11,7 +15,7 @@ class Dionysos:
     __del_pos = []  # --> to delete
 
     def __init__(self):
-        self.__display = Display.Display('COM3', 19200)
+        self.__display = Display('COM3', 19200)
 
     @staticmethod
     def __parse_format(pixel_vector):
