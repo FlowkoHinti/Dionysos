@@ -1,7 +1,7 @@
 # Elternklasse für die Spiele
 from Raspberry.Visualisation.Display import Display
-from Raspberry.Visualisation.Menu import Menu
-from Raspberry.Visualisation.Snake import Snake
+#from Raspberry.Visualisation.Menu import Menu
+# from Raspberry.Visualisation.Snake import Snake
 # from Raspberry.Visualisation.Tetris import Tetris
 from pynput import keyboard
 import subprocess
@@ -37,7 +37,7 @@ class Dionysos:
     def __check_pixel(self, pixel_vector):
         pixel = self.__parse_format(pixel_vector)
         if pixel not in self.screen and 0 <= pixel[0] < self.__display.display_width and \
-                0 <= pixel[1] < self.__display.display_hight:
+                0 <= pixel[1] < self.__display.display_height:
             return True
         else:
             print("Pixel already active or out of boundaries")
@@ -128,9 +128,9 @@ def snake():
     pass
 
 
-def tetris():
-    #ausführen, warten bis fertig
-    pass
+ # def tetris():
+ #     #ausführen, warten bis fertig
+ #     pass
 
 
 if __name__ == '__main__':
@@ -171,5 +171,5 @@ if __name__ == '__main__':
     """dy.add_pixel(vector10)"""
     dy.print_pixels()
     time.sleep(2)
-    dy.clear_screen()
+    # dy.clear_screen()
     # i.stop_listener()
