@@ -1,7 +1,7 @@
 #include <FastLED.h>
 #define displayWidth 5
 #define displayHight 10
-#define baudrate 19200
+#define baudrate 115200
 #define NUM_LEDS ((displayWidth*displayHight)-1)
 #define DATA_PIN 11
 
@@ -27,13 +27,13 @@ void setup() {
   FastLED.show();
 
   Serial.begin(baudrate);
-  establishConnection();
-  exchangeInfo();
+  //establishConnection();
+  //exchangeInfo();
 }
 
 
 void loop() {  
-  while (Serial.available() > 0){
+  while (Serial.available() >= 7){
       parseSerial();
       if (x == false){
         x = true;
@@ -67,14 +67,34 @@ void exchangeInfo(){
 
 
 void parseSerial(){
-    short x = Serial.parseInt(SKIP_ALL,';');
-    short y = Serial.parseInt(SKIP_ALL,';');
-    long color = Serial.parseInt(SKIP_ALL,';');
+  
+  String received = "";
+  if(Serial.read() == '['){
+    received = Serial.readStringUntil(']');
+    Serial.println(received);
+
+    short x_len = received.indexOf(',');
+    short y_len = received.indexOf(',', x_len);
+    short c_len = received.indexOf(']');
+    
+    String str_x = received.substring(0,x_len);
+    String str_y = received.substring(x_len,y_len);
+    String str_c = received.substring(y_len,c_len);
+    //Serial.println(str_x);
+    //Serial.println(str_y);
+    //Serial.println(str_c);
+  }
+
+
+    /*
+    short x = Serial.parseInt(SKIP_ALL);
+    short y = Serial.parseInt(SKIP_ALL);
+    long color = Serial.parseInt(SKIP_ALL);
     Serial.println(x);
     Serial.println(y);
     Serial.println(color);
-
-    leds[findID(x,y)] = color;    
+    leds[findID(x,y)] = color;
+    */
 }
 
 

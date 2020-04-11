@@ -48,7 +48,7 @@ class Tetromino:
 
 
 def tetris_main():
-    from Raspberry.Dionysos import Dionysos as Display, Input
+    # from Raspberry.Dionysos import Dionysos as Display
 
     collision = False
     pieces = ["I", "O", "T", "S", "Z", "J", "L"]
@@ -95,3 +95,7 @@ def tetris_main():
     #     pass
     #
     # tetris.clear_screen()
+
+
+if __name__ == '__main__':
+    tetris_main()
