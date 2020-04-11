@@ -1,6 +1,6 @@
 # Elternklasse für die Spiele
 from Raspberry.Visualisation.Display import Display
-#from Raspberry.Visualisation.Menu import Menu
+# from Raspberry.Visualisation.Menu import Menu
 # from Raspberry.Visualisation.Snake import Snake
 # from Raspberry.Visualisation.Tetris import Tetris
 from pynput import keyboard
