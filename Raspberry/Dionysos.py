@@ -24,15 +24,13 @@ class Dionysos:
     def add_pixel(self, pixel_vector):
         # --> other format than vector?
         if self.__check_pixel(pixel_vector):
-            pixel = self.__parse_format(pixel_vector)
-            self.screen.append(pixel)
+            self.screen.append(self.__parse_format(pixel_vector))
 
     def del_pixel(self, pixel_vector):
         # --> other format than vector?
         if not self.__check_pixel(pixel_vector):
-            pixel = self.__parse_format(pixel_vector)
-            self.screen.remove(pixel)
-            self.__del_pos.append(pixel)
+            self.screen.remove(self.__parse_format(pixel_vector))
+            self.__del_pos.append(self.__parse_format(pixel_vector))
 
     def __check_pixel(self, pixel_vector):
         pixel = self.__parse_format(pixel_vector)
@@ -44,8 +42,8 @@ class Dionysos:
             return False
 
     def print_pixels(self):
-        for delpos in self.__del_pos:
-            self.__display.pixel_off(delpos)
+        for del_pos in self.__del_pos:
+            self.__display.pixel_off(del_pos)
         self.__del_pos.clear()
 
         for pixel in self.screen:
@@ -60,7 +58,7 @@ class Dionysos:
         self.screen.clear()
         self.print_pixels()
 
-    def close_Ser(self):
+    def close_serial(self):
         self.__display.serialCon.close()
 
     def draw_letter(self, letter, start_x, start_y):

@@ -23,162 +23,131 @@ class Snake:
     alive = True
 
     def __init__(self, display_width, display_hight, color, ticks, food_color):
-        self.max_x = display_width
-        self.max_y = display_hight
+        self.max_x = display_width - 1
+        self.max_y = display_hight - 1
 
-        self.start_x = display_width // 2
-        self.start_y = display_hight // 2
-        self.snake = [[self.start_x, self.start_y], [self.start_x - 1, self.start_y], [self.start_x - 2, self.start_y]]
-        self.snake_length = len(self.snake)
+        self.snake = [[display_width // 2, display_hight // 2],  # Head
+                      [display_width // 2 - 1, display_hight // 2],  # Middle
+                      [display_width // 2 - 2, display_hight // 2]]  # Tail
+
         self.snake_color = color
         self.ticks = ticks
-        self.foodX = (self.max_x - self.start_x) // 2 + self.start_x
-        self.foodY = self.start_y
-        self.food = [self.foodX, self.foodY]
-        self.foodcolor = food_color
+        self.food = None
+        self.food_color = food_color
+        self.next_pos = None
 
-        self.Display = Dionysos
+        self.Display = Dionysos()
 
-        for part in self.snake:
-            self.ledmatrix.ledon(part, self.snake_color)
-        self.ledmatrix.ledon(self.food, self.foodcolor)
+    def start_game(self):
+        pass
+        self.new_food()
 
-    def startup(self):
+        # wenn input da
+        # while self.alive:
+        # self.get_next_pos(input)
+        # self.move_snake(input)
+
+        # for part in self.snake:
+        # self.ledmatrix.ledon(part, self.snake_color)
+        # self.ledmatrix.ledon(self.food, self.foodcolor)
 
         sleep(1)
 
-    def move(self, dir):
-
-        head = self.get_head()
-        tail = self.get_tail()
-
-        headX = head[0]
-        headY = head[1]
-        tailX = tail[0]
-        tailY = tail[1]
-
-        if dir is "t" and self.check_next_pos('t', headX, headY):
-            self.set_head(headX, headY + 1)
-            self.set_tail(tailX, tailY)
-
-        elif dir is "b" and self.check_next_pos('b', headX, headY):
-            self.set_head(headX, headY - 1)
-            self.set_tail(tailX, tailY)
-
-        elif dir is "r" and self.check_next_pos('r', headX, headY):
-            self.set_head(headX + 1, headY)
-            self.set_tail(tailX, tailY)
-
-        elif dir is "l" and self.check_next_pos('l', headX, headY):
-            self.set_head(headX - 1, headY)
-            self.set_tail(tailX, tailY)
-
-        sleep(snakespeed)
-
     def get_head(self):
-        snakehead = self.snake[0]
-        return snakehead
+        return self.snake[0]
 
-    def get_tail(self):
-        if self.snake_length < 2:
-            snaketail = self.snake[-1]
-        else:
-            snaketail = self.snake[self.snake_length - 2]
-        return snaketail
+    def get_next_pos(self, direction):
+        head = self.get_head()
 
-    def set_head(self, x, y):
-        self.snake.insert(0, [x, y])
+        if direction is "w":
+            if head[1] == self.max_y:
+                self.next_pos = [head[0], 0]
+            else:
+                self.next_pos = [head[0], head[1] + 1]
+
+        elif direction is "s":
+            if head[1] == 0:
+                self.next_pos = [head[0], self.max_y]
+            else:
+                self.next_pos = [head[0], head[1] - 1]
+
+        elif direction is "d":
+            if head[0] == self.max_x:
+                self.next_pos = [0, head[1]]
+            else:
+                self.next_pos = [head[0] + 1, head[1]]
+
+        elif direction is "a":
+            if head[0] == 0:
+                self.next_pos = [self.max_x, head[1]]
+            else:
+                self.next_pos = [head[0] - 1, head[1]]
+
+    def move_in_direction(self, new):
+        self.snake.insert(0, new)
         # self.ledmatrix.ledon([x, y], self.snake_color)
         # self.ledmatrix.ledoff(self.snake[-1], self.snake_color)
         self.snake.pop()
 
-    def set_tail(self, x, y):
-        """ÜBERARBEITEN"""
-        if self.snake_length < 2:
-            return True
-        self.snake[-1] = [x, y]
+    def move_snake(self, direction):
 
-    def check_next_pos(self, dir, head_x, head_y):
+        if direction is "w" and self.check_next_pos():
+            self.move_in_direction(self.get_next_pos("w"))
 
-        if dir is 't':
-            next_pos = [head_x, head_y + 1]
+        elif direction is "s" and self.check_next_pos():
+            self.move_in_direction(self.get_next_pos("s"))
 
-            if next_pos in self.snake or next_pos[1] > self.max_y:
-                self.death()
-                return False
-            elif next_pos == self.food:
-                self.eat(self.food[0], self.food[1], next_pos)
-                return False
-            return True
+        elif direction is "d" and self.check_next_pos():
+            self.move_in_direction(self.get_next_pos("d"))
 
-        elif dir == 'b':
-            next_pos = [head_x, head_y - 1]
+        elif direction is "a" and self.check_next_pos():
+            self.move_in_direction(self.get_next_pos("a"))
 
-            if next_pos in self.snake or next_pos[1] < 1:
-                self.death()
-                return False
-            elif next_pos == self.food:
-                self.eat(self.food[0], self.food[1], next_pos)
-                return False
+        sleep(self.ticks)
 
-            return True
-        elif dir == 'r':
-            next_pos = [head_x + 1, head_y]
+    def check_next_pos(self):
+        if self.next_pos in self.snake:
+            self.death()
+            return False
+        elif self.next_pos == self.food:
+            self.eat()
+            return False
 
-            if next_pos in self.snake or next_pos[0] > self.max_x:
-                self.death()
-                return False
-            elif next_pos == self.food:
-                self.eat(self.food[0], self.food[1], next_pos)
-                return False
-            return True
+    def eat(self):
 
-        elif dir == 'l':
-            next_pos = [head_x - 1, head_y]
+        # self.ledmatrix.ledoff(self.food, self.foodcolor)
+        self.new_food()
+        # self.ledmatrix.ledon(self.food, self.foodcolor)
 
-            if next_pos in self.snake or next_pos[0] < 1:
-                self.death()
-                return False
-            elif next_pos == self.food:
-                self.eat(self.food[0], self.food[1], next_pos)
-                return False
-            return True
-
-    def eat(self, food_x, food_y, next_pos):
-        randX = random.randint(1, self.max_x)
-        randY = random.randint(1, self.max_y)
-        new_food = [randX, randY]
-        # print("new food location :" + str(randX) + ", " + str(randY))
-
-        if new_food in self.snake or new_food == self.food:
-            self.eat(food_x, food_y, next_pos)
-        else:
-            # self.ledmatrix.ledoff(self.food, self.foodcolor)
-            self.food = new_food
-            # self.ledmatrix.ledon(self.food, self.foodcolor)
-
-        self.snake.insert(0, next_pos)
+        self.snake.insert(0, self.next_pos)
         # self.ledmatrix.ledon(next_pos, self.snakecolor)
         self.snake_length += 1
         return True
 
+    def new_food(self):
+        rand_x = random.randint(1, self.max_x)
+        rand_y = random.randint(1, self.max_y)
+        if [rand_x, rand_y] == self.food or [rand_x, rand_y] in self.snake:
+            self.new_food()
+        self.food = [rand_x, rand_y]
+
     def death(self):
         self.alive = False
-        head = self.get_head()
-        for i in range(7):
-            # self.ledmatrix.ledon(head, self.snakecolor)
-            sleep(0.2)
-            # self.ledmatrix.ledoff(head, self.snakecolor)
-            sleep(0.2)
+        # head = self.get_head()
+        # for i in range(7):
+        # self.ledmatrix.ledon(head, self.snakecolor)
+        # sleep(0.2)
+        # self.ledmatrix.ledoff(head, self.snakecolor)
+        # sleep(0.2)
 
         # self.ledmatrix.matrixclear()
         # print("Score = " + str(self.snakelength))
-        return False
 
     def win(self):
         # self.ledmatrix.matrixclear()
         self.alive = False
 
+    @staticmethod
     def is_opposite_dir(dir):
         if dir is None:
             return 'a'
