@@ -1,7 +1,7 @@
 # Elternklasse für die Spiele
 from Raspberry.Visualisation.Display import Display
 from Raspberry.Visualisation.Menu import Menu
-from Raspberry.Visualisation.Snake import Snake
+# from Raspberry.Visualisation.Snake import Snake
 # from Raspberry.Visualisation.Tetris import Tetris
 from pynput import keyboard
 import subprocess
@@ -132,7 +132,7 @@ def tetris():
 
 
 if __name__ == '__main__':
-    dy = Dionysos()
+    # dy = Dionysos()
     # i = Input()
     # i.listener_start()
     # i.allowed_keys(['w'])
@@ -142,7 +142,7 @@ if __name__ == '__main__':
     # men = Menu.Menu(dy)
     # men.start()
 
-    vector = numpy.array([[0], [0], [1], [16711680]])
+    """vector = numpy.array([[0], [0], [1], [16711680]])
     vector1 = numpy.array([[1], [1], [1], [255]])
     vector2 = numpy.array([[2], [2], [1], [16711680]])
     vector3 = numpy.array([[3], [3], [1], [255]])
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     vector8 = numpy.array([[0], [9], [1], [16711680]])
 
     vector9 = numpy.array([[4], [5], [1], [16711680]])
-    """vector10 = numpy.array([[4], [3], [1], [16711680]])"""
+    vector10 = numpy.array([[4], [3], [1], [16711680]])
 
     dy.add_pixel(vector)
     dy.add_pixel(vector1)
@@ -166,8 +166,8 @@ if __name__ == '__main__':
     dy.add_pixel(vector7)
     dy.add_pixel(vector8)
     dy.add_pixel(vector9)
-    """dy.add_pixel(vector10)"""
+    dy.add_pixel(vector10)
     dy.print_pixels()
     time.sleep(2)
-    dy.clear_screen()
+    dy.clear_screen()"""
     # i.stop_listener()
