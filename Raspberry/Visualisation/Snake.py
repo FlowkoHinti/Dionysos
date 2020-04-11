@@ -34,12 +34,19 @@ class Snake:
         self.ticks = ticks
         self.food = None
         self.food_color = food_color
+        self.next_pos = None
 
-        self.Display = Dionysos
+        self.Display = Dionysos()
 
-    def start_up(self):
+    def start_game(self):
         pass
         self.new_food()
+
+        # wenn input da
+        # while self.alive:
+        # self.get_next_pos(input)
+        # self.move_snake(input)
+
         # for part in self.snake:
         # self.ledmatrix.ledon(part, self.snake_color)
         # self.ledmatrix.ledon(self.food, self.foodcolor)
@@ -52,111 +59,67 @@ class Snake:
     def get_next_pos(self, direction):
         head = self.get_head()
 
-        if direction is "w" and self.check_next_pos('w'):
+        if direction is "w":
             if head[1] == self.max_y:
-                return [head[0], 0]
+                self.next_pos = [head[0], 0]
             else:
-                return [head[0], head[1] + 1]
+                self.next_pos = [head[0], head[1] + 1]
 
-        elif direction is "s" and self.check_next_pos('s'):
+        elif direction is "s":
             if head[1] == 0:
-                return [head[0], self.max_y]
+                self.next_pos = [head[0], self.max_y]
             else:
-                return [head[0], head[1] - 1]
+                self.next_pos = [head[0], head[1] - 1]
 
-        elif direction is "d" and self.check_next_pos('d'):
+        elif direction is "d":
             if head[0] == self.max_x:
-                return [0, head[1]]
+                self.next_pos = [0, head[1]]
             else:
-                return [head[0] + 1, head[1]]
+                self.next_pos = [head[0] + 1, head[1]]
 
-        elif direction is "a" and self.check_next_pos('a'):
+        elif direction is "a":
             if head[0] == 0:
-                return [self.max_x, head[1]]
+                self.next_pos = [self.max_x, head[1]]
             else:
-                return [head[0] - 1, head[1]]
+                self.next_pos = [head[0] - 1, head[1]]
 
     def move_in_direction(self, new):
         self.snake.insert(0, new)
-        # eher in die move funktion?
         # self.ledmatrix.ledon([x, y], self.snake_color)
         # self.ledmatrix.ledoff(self.snake[-1], self.snake_color)
         self.snake.pop()
 
     def move_snake(self, direction):
 
-        if direction is "w" and self.check_next_pos('w'):
-            self.move_in_direction(self.get_next_pos('w'))
+        if direction is "w" and self.check_next_pos():
+            self.move_in_direction(self.get_next_pos("w"))
 
-        elif direction is "s" and self.check_next_pos('s'):
-            self.move_in_direction(self.get_next_pos('s'))
+        elif direction is "s" and self.check_next_pos():
+            self.move_in_direction(self.get_next_pos("s"))
 
-        elif direction is "d" and self.check_next_pos('d'):
-            self.move_in_direction(self.get_next_pos('d'))
+        elif direction is "d" and self.check_next_pos():
+            self.move_in_direction(self.get_next_pos("d"))
 
-        elif direction is "a" and self.check_next_pos('a'):
-            self.move_in_direction(self.get_next_pos('a'))
+        elif direction is "a" and self.check_next_pos():
+            self.move_in_direction(self.get_next_pos("a"))
 
         sleep(self.ticks)
 
-    def check_next_pos(self, direction):
-        head = self.get_head()
-
-        if direction is 'w':
-            next_pos = [head[0], head[1] + 1]
-
-            if next_pos in self.snake or next_pos[1] > self.max_y:
-                self.death()
-                return False
-            elif next_pos == self.food:
-                self.eat(self.food[0], self.food[1], next_pos)
-                return False
-            return True
-
-        elif direction == 's':
-            next_pos = [head[0], head[1] - 1]
-
-            if next_pos in self.snake or next_pos[1] < 1:
-                self.death()
-                return False
-            elif next_pos == self.food:
-                self.eat(self.food[0], self.food[1], next_pos)
-                return False
-
-            return True
-        elif direction == 'd':
-            next_pos = [head[0] + 1, head[1]]
-
-            if next_pos in self.snake or next_pos[0] > self.max_x:
-                self.death()
-                return False
-            elif next_pos == self.food:
-                self.eat(self.food[0], self.food[1], next_pos)
-                return False
-            return True
-
-        elif direction == 'a':
-            next_pos = [head[0] - 1, head[1]]
-
-            if next_pos in self.snake or next_pos[0] < 1:
-                self.death()
-                return False
-            elif next_pos == self.food:
-                self.eat(self.food[0], self.food[1], next_pos)
-                return False
-            return True
-
-    @staticmethod
-    def border_reached(next_pos):
-        pass
+    def check_next_pos(self):
+        if self.next_pos in self.snake:
+            self.death()
+            return False
+        elif self.next_pos == self.food:
+            self.eat()
+            return False
 
     def eat(self):
 
         # self.ledmatrix.ledoff(self.food, self.foodcolor)
-        self.food = self.new_food()
+        self.new_food()
         # self.ledmatrix.ledon(self.food, self.foodcolor)
 
-        self.snake.insert(0, next_pos)
+        self.snake.insert(0, self.next_pos)
         # self.ledmatrix.ledon(next_pos, self.snakecolor)
         self.snake_length += 1
         return True
@@ -170,16 +133,15 @@ class Snake:
 
     def death(self):
         self.alive = False
-        head = self.get_head()
-        for i in range(7):
-            # self.ledmatrix.ledon(head, self.snakecolor)
-            sleep(0.2)
-            # self.ledmatrix.ledoff(head, self.snakecolor)
-            sleep(0.2)
+        # head = self.get_head()
+        # for i in range(7):
+        # self.ledmatrix.ledon(head, self.snakecolor)
+        # sleep(0.2)
+        # self.ledmatrix.ledoff(head, self.snakecolor)
+        # sleep(0.2)
 
         # self.ledmatrix.matrixclear()
         # print("Score = " + str(self.snakelength))
-        return False
 
     def win(self):
         # self.ledmatrix.matrixclear()
