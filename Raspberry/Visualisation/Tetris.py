@@ -1,37 +1,55 @@
 import numpy
-from Raspberry.Dionysos import Dionysos as Display, Input
+import time
+
 
 class Tetromino:
 
-    def __init__(self, piece_number):
-        self.piece = self.assign_piece(piece_number)
+    def __init__(self, piece_symbol):
+        self.piece = piece_symbol  # self.assign_piece(piece_symbol)
+        self.position = self.starting_position(self.piece)
 
-    # @staticmethod
-    def assign_piece(self, piece_number):
-        if piece_number == "I":
-            return "I"
-        elif piece_number == "O":
+    @staticmethod
+    def starting_position(piece_symbol):
+        if piece_symbol == "I":
+            return [numpy.array([[1], [0], [1], [16776960]]),
+                    numpy.array([[2], [0], [1], [16776960]]),
+                    numpy.array([[3], [0], [1], [16776960]]),
+                    numpy.array([[4], [0], [1], [16776960]])]
+        elif piece_symbol == "O":
             return "O"
-        elif piece_number == "T":
+        elif piece_symbol == "T":
             return "T"
-        elif piece_number == "S":
+        elif piece_symbol == "S":
             return "S"
-        elif piece_number == "Z":
+        elif piece_symbol == "Z":
             return "Z"
-        elif piece_number == "J":
+        elif piece_symbol == "J":
             return "J"
-        elif piece_number == "L":
+        elif piece_symbol == "L":
             return "L"
 
-    def spawn_piece(self):
-        pass
 
+def tetris_main():
+    from Raspberry.Dionysos import Dionysos as Display, Input
 
-if __name__ == '__main__':
+    collision = False
     pieces = ["I", "O", "T", "S", "Z", "J", "L"]
-    tertis = Display()
+    tetris = Display()
 
-    tertis.add_pixel(numpy.array([[int()], [0], [1], [16711680]]))
+    # piece = Tetromino(numpy.random.choice(pieces, 1))
+    piece = Tetromino("I")
 
     print("****** Tetris ******")
-    piece = Tetromino(numpy.random.choice(pieces, 1))
+
+    print(piece.position)
+
+    for vector in piece.position:
+        tetris.add_pixel(vector)
+
+    tetris.print_pixels()
+
+    # while not collision:
+    #     time.sleep(1)
+    #     pass
+    #
+    # tetris.clear_screen()
