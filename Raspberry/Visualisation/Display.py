@@ -11,7 +11,7 @@ class Display:
     def __init__(self, port, baudrate):
         try:
             self.serialCon = serial.Serial(port, baudrate)
-            sleep(5)  # reset wenn Serial geöffnet wird
+            sleep(2)  # reset wenn Serial geöffnet wird
         except Exception:
             print("Couldn't open Serial port")
         # self.__get_display()
@@ -22,20 +22,20 @@ class Display:
 
     def __read_lines(self):
         readThread = threading.Thread(target=self.__read_ser)
-        #readThread.daemon = True
+        # readThread.daemon = True
         readThread.start()
 
     def __read_ser(self):
         while True:
             print(self.serialCon.readline())
 
-        """s = ""
-        while True:
-            ch = int(self.serialCon.readline().decode('utf-8').replace('\r', '').replace('\n', ''))
-            s = s + " " + chr(ch)
-            if chr(ch) == ";":
-                print(s)
-                s = """""
+        # s = ""
+        # while True:
+        #     ch = int(self.serialCon.readline().decode('utf-8').replace('\r', '').replace('\n', ''))
+        #     s = s + " " + chr(ch)
+        #     if chr(ch) == ";":
+        #         print(s)
+        #         s = ""
 
     def __get_display(self):
         while self.__check_ser():
@@ -63,7 +63,7 @@ class Display:
         #self.__write_ser('c{};'.format(pixel[2]))
 
     def pixel_off(self, pixel):
-        self.__write_ser('x{},y{},c0;'.format(pixel[0], pixel[1]))
+        self.__write_ser('[{},{},0]'.format(pixel[0], pixel[1]))
         # self.__write_ser('x{};'.format(pixel[0]))
         # self.__write_ser('y{};'.format(pixel[1]))
         #self.__write_ser('c0;')
