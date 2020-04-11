@@ -1,6 +1,6 @@
 # Elternklasse für die Spiele
 from Raspberry.Visualisation.Display import Display
-from Raspberry.Visualisation.Menu import Menu
+# from Raspberry.Visualisation.Menu import Menu
 # from Raspberry.Visualisation.Snake import Snake
 # from Raspberry.Visualisation.Tetris import Tetris
 from pynput import keyboard
@@ -15,7 +15,7 @@ class Dionysos:
     __del_pos = []  # --> to delete
 
     def __init__(self):
-        self.__display = Display('COM3', 19200)
+        self.__display = Display('COM3', 115200)
 
     @staticmethod
     def __parse_format(pixel_vector):
@@ -35,7 +35,7 @@ class Dionysos:
     def __check_pixel(self, pixel_vector):
         pixel = self.__parse_format(pixel_vector)
         if pixel not in self.screen and 0 <= pixel[0] < self.__display.display_width and \
-                0 <= pixel[1] < self.__display.display_hight:
+                0 <= pixel[1] < self.__display.display_height:
             return True
         else:
             print("Pixel already active or out of boundaries")
@@ -63,6 +63,14 @@ class Dionysos:
 
     def draw_letter(self, letter, start_x, start_y):
         pass
+
+    def test_screen(self):
+        for i in range(2):
+            for j in range(10):
+                self.add_pixel(numpy.array([[i], [j], [1], [16777215]]))
+            self.print_pixels()
+            # time.sleep(5)
+            #self.clear_screen()
 
 
 class Input:
@@ -132,7 +140,8 @@ def tetris():
 
 
 if __name__ == '__main__':
-    # dy = Dionysos()
+    dy = Dionysos()
+    dy.test_screen()
     # i = Input()
     # i.listener_start()
     # i.allowed_keys(['w'])
