@@ -93,9 +93,9 @@ class Input:
             elif key == keyboard.Key.down:
                 self.__on_press(keyboard.KeyCode.from_char('s'))
             elif key == keyboard.Key.left:
-                self.__on_press(keyboard.KeyCode.from_char('d'))
-            elif key == keyboard.Key.right:
                 self.__on_press(keyboard.KeyCode.from_char('a'))
+            elif key == keyboard.Key.right:
+                self.__on_press(keyboard.KeyCode.from_char('d'))
             elif key == keyboard.Key.enter:
                 self.__on_press(keyboard.KeyCode.from_char('#'))  # ENTER = #
             #print('special key {0} pressed'.format(key))
