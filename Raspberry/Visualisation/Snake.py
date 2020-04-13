@@ -1,113 +1,108 @@
 import random
 from Raspberry.Dionysos import Input
-# from Raspberry.Dionysos import Dionysos
+from Raspberry.Dionysos import Dionysos
 from time import sleep
 import numpy
-import time
 
-life = 0
-# Speed of the Snake in seconds
-speeds = [0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7]
-snakespeed = speeds[life]
-
-# Size of the display
-maxX = 8
-maxY = 8
-
-# Adjustable colors (r,g,b,c,m,y,w)
-snakecolor = ['g', 'b', 'r', 'y', 'm', 'c', 'w']
-foodcolor = ['r', 'm', 'c', 'b', 'w', 'y', 'g']
+"""TODO:
+Win condition
+levels
+"""
 
 
 class Snake:
-    snakedir = None
-    alive = True
+    d = Dionysos()
+    i = Input()
+    i.allowed_keys(["w", "a", "s", "d"])
 
-    def __init__(self, display_width, display_hight, color, ticks, food_color):
+    def __init__(self, display_width, display_height, color, ticks, food_color):
         self.max_x = display_width - 1
-        self.max_y = display_hight - 1
+        self.max_y = display_height - 1
 
-        self.snake = [[display_width // 2, display_hight // 2],  # Head
-                      [display_width // 2 - 1, display_hight // 2],  # Middle
-                      [display_width // 2 - 2, display_hight // 2]]  # Tail
+        self.snake = [[display_width // 2, display_height // 2],  # Head
+                      [display_width // 2 - 1, display_height // 2],  # Middle
+                      [display_width // 2 - 2, display_height // 2]]  # Tail
 
         self.snake_color = color
         self.ticks = ticks
         self.food = None
         self.food_color = food_color
         self.next_pos = None
-        self.d = Dionysos()
+        self.snake_dir = None
+        self.alive = True
 
     @staticmethod
     def change_format(pos, color):
         return numpy.array([[pos[0]], [pos[1]], [1], [color]])
 
-    def start_game(self):
-        pass
-        self.new_food()
+    @staticmethod
+    def opposite_dir(direction):
+        if direction == 'w':
+            return 's'
+        elif direction == 's':
+            return 'w'
+        elif direction == 'd':
+            return 'a'
+        elif direction == 'a':
+            return 'd'
 
-        # wenn input da
-        # while self.alive:
-        # self.get_next_pos(input)
-        # self.move_snake(input)
+    def start_game(self):
+
+        self.i.listener_start()
+        self.new_food()
 
         for part in self.snake:
             self.d.add_pixel(self.change_format(part, self.snake_color))
-
         self.d.print_pixels()
-        sleep(1)
+
+        while self.i.get_key() is None or self.i.get_key() == 'a':
+            self.i.get_key()
+
+        while self.alive:
+            if self.i.get_key() != self.opposite_dir(self.snake_dir):
+                self.snake_dir = self.i.get_key()
+
+            self.move_snake()
+            self.d.print_pixels()
+            sleep(self.ticks)
 
     def get_head(self):
         return self.snake[0]
 
-    def get_next_pos(self, direction):
+    def get_next_pos(self):
         head = self.get_head()
 
-        if direction == "w":
+        if self.snake_dir == "w":
             if head[1] == self.max_y:
                 self.next_pos = [head[0], 0]
             else:
                 self.next_pos = [head[0], head[1] + 1]
 
-        elif direction == "s":
+        elif self.snake_dir == "s":
             if head[1] == 0:
                 self.next_pos = [head[0], self.max_y]
             else:
                 self.next_pos = [head[0], head[1] - 1]
 
-        elif direction == "d":
+        elif self.snake_dir == "d":
             if head[0] == self.max_x:
                 self.next_pos = [0, head[1]]
             else:
                 self.next_pos = [head[0] + 1, head[1]]
 
-        elif direction == "a":
+        elif self.snake_dir == "a":
             if head[0] == 0:
                 self.next_pos = [self.max_x, head[1]]
             else:
                 self.next_pos = [head[0] - 1, head[1]]
 
-    def move_in_direction(self, new):
-        self.snake.insert(0, new)
-        # self.d.add_pixel(new, self.snake_color)
-        # self.ledmatrix.ledoff(self.snake[-1], self.snake_color)
-        self.snake.pop()
-
-    def move_snake(self, direction):
-
-        if direction == "w" and self.check_next_pos():
-            self.move_in_direction(self.get_next_pos("w"))
-
-        elif direction == "s" and self.check_next_pos():
-            self.move_in_direction(self.get_next_pos("s"))
-
-        elif direction == "d" and self.check_next_pos():
-            self.move_in_direction(self.get_next_pos("d"))
-
-        elif direction == "a" and self.check_next_pos():
-            self.move_in_direction(self.get_next_pos("a"))
-
-        sleep(self.ticks)
+    def move_snake(self):
+        self.get_next_pos()
+        if self.check_next_pos():
+            self.snake.insert(0, self.next_pos)
+            self.d.add_pixel(self.change_format(self.next_pos, self.snake_color))
+            self.d.del_pixel(self.change_format(self.snake[-1], self.snake_color))
+            self.snake.pop()
 
     def check_next_pos(self):
         if self.next_pos in self.snake:
@@ -116,83 +111,45 @@ class Snake:
         elif self.next_pos == self.food:
             self.eat()
             return False
+        return True
 
     def eat(self):
         self.new_food()
         self.snake.insert(0, self.next_pos)
-        # self.ledmatrix.ledon(next_pos, self.snakecolor)
+        self.d.add_pixel(self.change_format(self.next_pos, self.snake_color))
 
     def new_food(self):
-        rand_x = random.randint(1, self.max_x)
-        rand_y = random.randint(1, self.max_y)
-        if [rand_x, rand_y] == self.food or [rand_x, rand_y] in self.snake:
+        rand_x = random.randint(0, self.max_x)
+        rand_y = random.randint(0, self.max_y)
+        if [rand_x, rand_y] in self.snake or [rand_x, rand_y] == self.food:
             self.new_food()
-
-        if self.food is not None:
-            self.d.del_pixel(self.change_format(self.food, self.food_color))
-        self.food = [rand_x, rand_y]
-        self.d.add_pixel(self.change_format(self.food, self.food_color))
+        else:
+            if self.food is not None:
+                self.d.del_pixel(self.change_format(self.food, self.food_color))
+            self.food = [rand_x, rand_y]
+            self.d.add_pixel(self.change_format(self.food, self.food_color))
 
     def death(self):
         self.alive = False
         head = self.get_head()
-        # for i in range(7):
-        # self.ledmatrix.ledon(head, self.snakecolor)
-        # sleep(0.2)
-        # self.ledmatrix.ledoff(head, self.snakecolor)
-        # sleep(0.2)
+        for i in range(7):
+            self.d.del_pixel(self.change_format(head, self.snake_color))
+            sleep(0.2)
+            self.d.print_pixels()
+            self.d.add_pixel(self.change_format(head, self.snake_color))
+            sleep(0.2)
+            self.d.print_pixels()
 
-        # self.ledmatrix.matrixclear()
-        # print("Score = " + str(self.snakelength))
+        self.d.clear_screen()
 
     def win(self):
+        """In Progress"""
         # self.ledmatrix.matrixclear()
         self.alive = False
 
-    @staticmethod
-    def is_opposite_dir(dir):
-        if dir is None:
-            return 'a'
-        elif dir == 'w':
-            return 's'
-        elif dir == 's':
-            return 'w'
-        elif dir == 'd':
-            return 'a'
-        elif dir == 'a':
-            return 'd'
-
 
 if __name__ == '__main__':
-    s = Snake(5, 10, 255, 2, 12200000)
+    s = Snake(5, 10, 3000066, 0.5, 9830402)
     s.start_game()
-    """ÜBERARBEITEN"""
-    """
 
-    while 1:
-        while life < 7:
-            snake = Snake(maxX, maxY, snakecolor[life], snakespeed, foodcolor[life])
-            q = Queue(1)
-            process = Process(target=readdirection, args=(q,))
-            process.deamon = True
-            process.start()
 
-            while snake.alive:
-                if snake.snake_length == (maxX * maxY) - 1:
-                    snake.win()
-                    life = 6
-                else:
-                    if not q.empty():
-                        try:
-                            if not q.get() == is_opposite_dir(snake.snakedir):
-                                snake.snakedir = q.get(timeout=0.03)
-                            elif snake.snake_length == 1:
-                                snake.snakedir = q.get(timeout=0.03)
-                        except:
-                            #print("Empty Queue Exception")
-                            continue
-                    snake.move(snake.snakedir)
-            process.terminate()
-            life += 1
-        life = 0
-            """

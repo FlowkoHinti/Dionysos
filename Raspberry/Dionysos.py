@@ -2,7 +2,7 @@
 from Raspberry.Visualisation.Display import Display
 # from Raspberry.Visualisation.Menu import Menu
 # from Raspberry.Visualisation.Snake import Snake
-from Raspberry.Visualisation import Tetris
+# from Raspberry.Visualisation import Tetris
 from pynput import keyboard
 import subprocess
 import numpy
@@ -38,7 +38,7 @@ class Dionysos:
                 0 <= pixel[1] < self.__display.display_height:
             return True
         else:
-            print("Pixel already active or out of boundaries")
+            #print("Pixel already active or out of boundaries")
             return False
 
     def print_pixels(self):
@@ -74,7 +74,7 @@ class Dionysos:
 
 
 class Input:
-    __key = ''
+    __key = None
     __allowed = []
     __listener = None
 
@@ -84,8 +84,8 @@ class Input:
     def __on_press(self, key):
         try:
             if key.char in self.__allowed:
-                self.__key = key.char.upper()
-                print('alphanumeric key {0} pressed'.format(key))
+                self.__key = key.char
+                #print('alphanumeric key {0} pressed'.format(key))
 
         except AttributeError:
             if key == keyboard.Key.up:
@@ -140,7 +140,7 @@ def tetris():
 
 
 if __name__ == '__main__':
-    Tetris.tetris_main()
+    # Tetris.tetris_main()
     # dy = Dionysos()
     # dy.test_screen()
     # i = Input()
