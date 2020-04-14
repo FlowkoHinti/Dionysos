@@ -2,7 +2,7 @@
 from Raspberry.Visualisation.Display import Display
 # from Raspberry.Visualisation.Menu import Menu
 # from Raspberry.Visualisation.Snake import Snake
-from Raspberry.Visualisation import Tetris
+# from Raspberry.Visualisation import Tetris
 from pynput import keyboard
 import subprocess
 import numpy
@@ -138,13 +138,9 @@ def snake():
     pass
 
 
-def tetris():
-    #ausführen, warten bis fertig
-    pass
-
-
 if __name__ == '__main__':
-    Tetris.tetris_main()
+    # tetris_main()
+
     # dy = Dionysos()
     # while True:
     #     dy.test_screen()

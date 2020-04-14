@@ -76,7 +76,7 @@ void parseSerial(){
 
 void update_led_status(){
   String received = Serial.readStringUntil(']');
-  Serial.println(received);
+  //Serial.println(received);
   
   short x_len = received.indexOf(',');
   short y_len = received.indexOf(',', x_len+1);
