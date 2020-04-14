@@ -9,19 +9,16 @@ CRGB leds[(displayWidth*displayHight)];  //Define the array of leds CRGB is an o
 
 void establishConnection();
 void exchangeInfo();
-bool checkConnection();
 void parseSerial();
-bool x = false;
+void update_led_info();
 
 
 void setup() {
-
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, (displayWidth*displayHight));  //GRB ordering is assumed
   //Turn all LEDS off
   for (int i = 0; i > NUM_LEDS; ++i) {
      leds[i] = CRGB::Black;
   }
-
   
   FastLED.setBrightness(10);
   FastLED.show();
@@ -32,19 +29,10 @@ void setup() {
 }
 
 
-void loop() {  
-  while (Serial.available() >= 7){
-      parseSerial();
-      //FastLED.show();
-      if (x == false){
-        x = true;
-      }
-    }
-
-    if (x == true){
-      FastLED.show();
-      x = false;
-    }
+void loop() {      
+  if (Serial.available() > 0){
+    parseSerial();
+  }
 }
 
 
@@ -67,37 +55,39 @@ void exchangeInfo(){
 }
 
 
-void parseSerial(){
+void parseSerial(){ 
+  char read_char;
   
-  String received = "";
-  if(Serial.read() == '['){
-    received = Serial.readStringUntil(']');
-    Serial.println(received);
-
-    short x_len = received.indexOf(',');
-    short y_len = received.indexOf(',', x_len+1);
-    short c_len = received.indexOf(']');
+  if(Serial.read() == '#'){
+    read_char = Serial.read();
+            
+    do {
+      if(read_char == '['){
+        update_led_status();
+      } else if (read_char != '\xff'){
+        break;
+      }
+      read_char = Serial.read();      
+    }while (read_char != '#');
     
-    String str_x = received.substring(0,x_len);
-    String str_y = received.substring(x_len+1,y_len);
-    String str_c = received.substring(y_len+1,c_len);
-    //Serial.println(str_x);
-    //Serial.println(str_y);
-    //Serial.println(str_c);
-
-    leds[findID(str_x.toInt(), str_y.toInt())] = str_c.toInt();
+    FastLED.show();
   }
-    /*
-    short x = Serial.parseInt(SKIP_ALL);
-    short y = Serial.parseInt(SKIP_ALL);
-    long color = Serial.parseInt(SKIP_ALL);
-    //Serial.println(x);
-    //Serial.println(y);
-    //Serial.println(color);
-    leds[findID(x,y)] = color;
-    */
 }
 
+void update_led_status(){
+  String received = Serial.readStringUntil(']');
+  Serial.println(received);
+  
+  short x_len = received.indexOf(',');
+  short y_len = received.indexOf(',', x_len+1);
+  short c_len = received.indexOf(']');
+  
+  String str_x = received.substring(0,x_len);
+  String str_y = received.substring(x_len+1,y_len);
+  String str_c = received.substring(y_len+1,c_len);
+  
+  leds[findID(str_x.toInt(), str_y.toInt())] = str_c.toInt();
+}
 
 short findID(short x, short y){
   if (x%2 != 0){

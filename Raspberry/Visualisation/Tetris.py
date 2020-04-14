@@ -57,12 +57,19 @@ def tetris_main():
     print("****** Tetris ******")
     # print(piece.position)
 
+    test = 0
+
     while not collision:
         piece = Tetromino(numpy.random.choice(pieces, 1))
         for vector in piece.position:
             tetris.add_pixel(vector)
 
         tetris.print_pixels()
-        time.sleep(0.25)
+        # time.sleep(0.25)
         tetris.clear_screen()
-        # time.sleep(2)
+        # time.sleep(0.25)
+
+        # test += 1
+        #
+        # if test > 0:
+        #     collision = True

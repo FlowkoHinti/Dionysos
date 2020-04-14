@@ -56,6 +56,9 @@ class Display:
             print("Connection lost")
             return False
 
+    def screen_update_batch_tag(self):
+        self.__write_ser('#')
+
     def pixel_on(self, pixel):
         self.__write_ser('[{},{},{}]'.format(pixel[0], pixel[1], pixel[2]))
         # self.__write_ser('x{},'.format(pixel[0]))

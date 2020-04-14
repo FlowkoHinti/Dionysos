@@ -2,7 +2,7 @@
 from Raspberry.Visualisation.Display import Display
 # from Raspberry.Visualisation.Menu import Menu
 # from Raspberry.Visualisation.Snake import Snake
-# from Raspberry.Visualisation import Tetris
+from Raspberry.Visualisation import Tetris
 from pynput import keyboard
 import subprocess
 import numpy
@@ -38,10 +38,12 @@ class Dionysos:
                 0 <= pixel[1] < self.__display.display_height:
             return True
         else:
-            #print("Pixel already active or out of boundaries")
+            print("Pixel already active or out of boundaries")
             return False
 
     def print_pixels(self):
+        self.__display.screen_update_batch_tag()
+
         for del_pos in self.__del_pos:
             self.__display.pixel_off(del_pos)
         self.__del_pos.clear()
@@ -50,6 +52,8 @@ class Dionysos:
             if pixel not in self.__screen_old:
                 self.__display.pixel_on(pixel)
         self.__screen_old = self.screen.copy()
+
+        self.__display.screen_update_batch_tag()
 
     def clear_screen(self):
         # vllt nur c an Arduino und screen löschen
@@ -68,13 +72,13 @@ class Dionysos:
         for i in range(5):
             for j in range(10):
                 self.add_pixel(numpy.array([[i], [j], [1], [16777215]]))
-            self.print_pixels()
-            # time.sleep(5)
-            #self.clear_screen()
+        self.print_pixels()
+        # time.sleep(5)
+        # self.clear_screen()
 
 
 class Input:
-    __key = None
+    __key = ''
     __allowed = []
     __listener = None
 
@@ -84,8 +88,8 @@ class Input:
     def __on_press(self, key):
         try:
             if key.char in self.__allowed:
-                self.__key = key.char
-                #print('alphanumeric key {0} pressed'.format(key))
+                self.__key = key.char.upper()
+                print('alphanumeric key {0} pressed'.format(key))
 
         except AttributeError:
             if key == keyboard.Key.up:
@@ -140,9 +144,11 @@ def tetris():
 
 
 if __name__ == '__main__':
-    # Tetris.tetris_main()
+    Tetris.tetris_main()
     # dy = Dionysos()
-    # dy.test_screen()
+    # while True:
+    #     dy.test_screen()
+    #     dy.clear_screen()
     # i = Input()
     # i.listener_start()
     # i.allowed_keys(['w'])
