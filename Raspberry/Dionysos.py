@@ -78,7 +78,7 @@ class Dionysos:
 
 
 class Input:
-    __key = ''
+    __key = None
     __allowed = []
     __listener = None
 
@@ -88,7 +88,7 @@ class Input:
     def __on_press(self, key):
         try:
             if key.char in self.__allowed:
-                self.__key = key.char.upper()
+                self.__key = key.char.lower()
                 print('alphanumeric key {0} pressed'.format(key))
 
         except AttributeError:

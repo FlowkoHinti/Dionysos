@@ -56,7 +56,6 @@ def tetris_main():
 
     print("****** Tetris ******")
     # print(piece.position)
-
     test = 0
 
     while not collision:
