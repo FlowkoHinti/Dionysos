@@ -21,6 +21,12 @@ class Dionysos:
     def __parse_format(pixel_vector):
         return [pixel_vector[0][0], pixel_vector[1][0], pixel_vector[3][0]]
 
+    def get_width(self):
+        return self.__display.display_width
+
+    def get_height(self):
+        return self.__display.display_height
+
     def add_pixel(self, pixel_vector):
         # --> other format than vector?
         if self.__check_pixel(pixel_vector):
@@ -114,6 +120,9 @@ class Input:
         self.__allowed.clear()
         for key in keys:
             self.__allowed.append(key)
+
+    def reset_key(self):
+        self.__key = None
 
     def listener_start(self):
         try:

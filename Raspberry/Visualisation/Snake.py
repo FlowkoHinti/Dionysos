@@ -14,22 +14,28 @@ class Snake:
     d = Dionysos()
     i = Input()
     i.allowed_keys(["w", "a", "s", "d"])
+    display_width = d.get_width()
+    display_height = d.get_height()
 
-    def __init__(self, display_width, display_height, color, ticks, food_color):
-        self.max_x = display_width - 1
-        self.max_y = display_height - 1
+    def __init__(self, snake_color, ticks, food_color, level):
+        self.max_x = self.display_width - 1
+        self.max_y = self.display_height - 1
 
-        self.snake = [[display_width // 2, display_height // 2],  # Head
-                      [display_width // 2 - 1, display_height // 2],  # Middle
-                      [display_width // 2 - 2, display_height // 2]]  # Tail
+        self.snake = [[self.display_width // 2, self.display_height // 2],  # Head
+                      [self.display_width // 2 - 1, self.display_height // 2],  # Middle
+                      [self.display_width // 2 - 2, self.display_height // 2]]  # Tail
 
-        self.snake_color = color
+        self.snake_color = snake_color
         self.ticks = ticks
         self.food = None
         self.food_color = food_color
         self.next_pos = None
         self.snake_dir = None
-        self.alive = True
+        self.alive = False
+        self.game_over = False
+        self.score = 0
+        self.total_score = self.score
+        self.level = level
 
     @staticmethod
     def change_format(pos, color):
@@ -49,22 +55,30 @@ class Snake:
     def start_game(self):
 
         self.i.listener_start()
-        self.new_food()
 
-        for part in self.snake:
-            self.d.add_pixel(self.change_format(part, self.snake_color))
-        self.d.print_pixels()
+        while not self.game_over:
+            self.new_food()
 
-        while self.i.get_key() is None or self.i.get_key() == 'a':
-            self.i.get_key()
-
-        while self.alive:
-            if self.i.get_key() != self.opposite_dir(self.snake_dir):
-                self.snake_dir = self.i.get_key()
-
-            self.move_snake()
+            for part in self.snake:
+                self.d.add_pixel(self.change_format(part, self.snake_color))
             self.d.print_pixels()
-            sleep(self.ticks)
+
+            self.i.reset_key()
+            while self.i.get_key() is None or self.i.get_key() == 'a':
+                self.i.get_key()
+
+            self.alive = True
+
+            while self.alive:
+                if self.i.get_key() != self.opposite_dir(self.snake_dir):
+                    self.snake_dir = self.i.get_key()
+
+                self.move_snake()
+                self.d.print_pixels()
+                sleep(self.ticks)
+        self.i.stop_listener()
+        self.d.clear_screen()
+        self.d.close_serial()
 
     def get_head(self):
         return self.snake[0]
@@ -117,6 +131,9 @@ class Snake:
         self.new_food()
         self.snake.insert(0, self.next_pos)
         self.d.add_pixel(self.change_format(self.next_pos, self.snake_color))
+        self.update_score()
+        if (((self.display_width * self.display_height) - 3) * 100 * self.level) == self.score:
+            self.win()
 
     def new_food(self):
         rand_x = random.randint(0, self.max_x)
@@ -131,6 +148,7 @@ class Snake:
 
     def death(self):
         self.alive = False
+        self.game_over = True
         head = self.get_head()
         for i in range(7):
             self.d.del_pixel(self.change_format(head, self.snake_color))
@@ -142,14 +160,35 @@ class Snake:
 
         self.d.clear_screen()
 
+    def update_score(self):
+        self.score += 100 * self.level
+
+    def reset_snake(self):
+        self.snake = [[self.display_width // 2, self.display_height // 2],  # Head
+                      [self.display_width // 2 - 1, self.display_height // 2],  # Middle
+                      [self.display_width // 2 - 2, self.display_height // 2]]  # Tail
+        self.snake_dir = None
+        self.next_pos = None
+        self.food = None
+
     def win(self):
-        """In Progress"""
-        # self.ledmatrix.matrixclear()
         self.alive = False
+        self.level += 1
+        self.total_score += self.score
+        self.score = 0
+        self.reset_snake()
+        self.d.clear_screen()
+        for x in range(self.max_x + 1):
+            for y in range(self.max_y + 1):
+                self.d.add_pixel(self.change_format([x, y], 16754688))
+                self.d.print_pixels()
+                sleep(0.1)
+        sleep(1)
+        self.d.clear_screen()
 
 
 if __name__ == '__main__':
-    s = Snake(5, 10, 3000066, 0.5, 9830402)
+    s = Snake(65280, 0.5, 16711680, 1)
     s.start_game()
 
 
