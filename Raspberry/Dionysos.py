@@ -14,7 +14,7 @@ class Dionysos:
 
     @staticmethod
     def __parse_format(pixel_vector):
-        return [pixel_vector[0][0], pixel_vector[1][0], pixel_vector[2][0]]
+        return [pixel_vector[0][0], pixel_vector[1][0], pixel_vector[3][0]]
 
     def get_width(self):
         return self.__display.display_width
@@ -65,9 +65,6 @@ class Dionysos:
 
     def close_serial(self):
         self.__display.serialCon.close()
-
-    def draw_letter(self, letter, start_x, start_y):
-        pass
 
     def test_screen(self):
         for i in range(5):

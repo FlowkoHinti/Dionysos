@@ -16,8 +16,10 @@ class Snake:
     i.allowed_keys(["w", "a", "s", "d"])
     display_width = d.get_width()
     display_height = d.get_height()
+    snake_colors = [65280, 55000, 1966427]
+    snake_speeds = [0.7, 0.4, 0.3]
 
-    def __init__(self, snake_color, ticks, food_color, level):
+    def __init__(self, ticks, level):
         self.max_x = self.display_width - 1
         self.max_y = self.display_height - 1
 
@@ -25,21 +27,22 @@ class Snake:
                       [self.display_width // 2 - 1, self.display_height // 2],  # Middle
                       [self.display_width // 2 - 2, self.display_height // 2]]  # Tail
 
-        self.snake_color = snake_color
-        self.ticks = ticks
+        self.level = level
+        self.snake_color = self.snake_colors[level - 1]
+        self.ticks = self.snake_speeds[level - 1]
         self.food = None
-        self.food_color = food_color
+        self.food_color = 16711680
         self.next_pos = None
         self.snake_dir = None
         self.alive = False
         self.game_over = False
         self.score = 0
         self.total_score = self.score
-        self.level = level
+
 
     @staticmethod
     def change_format(pos, color):
-        return numpy.array([[pos[0]], [pos[1]], [color]])
+        return numpy.array([[pos[0]], [pos[1]], [1], [color]])
 
     @staticmethod
     def opposite_dir(direction):
@@ -188,7 +191,7 @@ class Snake:
 
 
 if __name__ == '__main__':
-    s = Snake(65280, 0.5, 16711680, 1)
+    s = Snake(0.5, 3)
     s.start_game()
 
 
