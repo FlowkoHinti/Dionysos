@@ -39,7 +39,7 @@ class Dionysos:
                 0 <= pixel[1] < self.__display.display_height:
             return True
         else:
-            print("Pixel already active or out of boundaries")
+            # print("Pixel already active or out of boundaries")
             return False
 
     def print_pixels(self):
@@ -87,7 +87,7 @@ class Input:
         try:
             if key.char in self.__allowed:
                 self.__key = key.char.lower()
-                print('alphanumeric key {0} pressed'.format(key))
+                # print('alphanumeric key {0} pressed'.format(key))
 
         except AttributeError:
             if key == keyboard.Key.up:

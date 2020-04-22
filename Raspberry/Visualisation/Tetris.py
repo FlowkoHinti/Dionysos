@@ -1,15 +1,16 @@
+import threading
 import numpy
 import time
-from Raspberry.Dionysos import Dionysos as Display
-from Raspberry.Dionysos import Input
 
 
 class Tetris:
+    from Raspberry.Dionysos import Dionysos as Display
+    from Raspberry.Dionysos import Input
     Display = Display()
     Input = Input()
 
     def __init__(self):
-        self.pixel = numpy.array([[]])
+        self.pixel = []
         self.Input.listener_start()
         self.Input.allowed_keys(["w", "a", "s", "d"])
 
@@ -18,25 +19,26 @@ class Tetromino:
     __pieces = ["I", "O", "T", "S", "Z", "J", "L"]
 
     def __init__(self, tetris: Tetris):
-        # self.piece = numpy.random.choice(self.__pieces, 1)
-        self.piece = "T"
+        self.piece = numpy.random.choice(self.__pieces, 1)
         self.display_height = Tetris.Display.get_height()
         self.display_width = Tetris.Display.get_width()
         self.position = self.starting_position(self.piece, self.display_height, self.display_width)
 
+        valid = True
         for pos in self.position:
             if self.check_collision(pos, tetris):
-                pass
+                valid = False
 
-        for vector in self.position:
-            Tetris.Display.add_pixel(vector)
-        Tetris.Display.print_pixels()
+        if valid:
+            for vector in self.position:
+                Tetris.Display.add_pixel(vector)
+            Tetris.Display.print_pixels()
 
     @staticmethod
     def starting_position(piece_symbol, display_height, display_width):
         if piece_symbol == "I":
-            return [numpy.array([[(display_width//2)-1], [display_height-2], [1], [255]]),
-                    numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
+            return [numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
+                    numpy.array([[(display_width//2)-1], [display_height-2], [1], [255]]),
                     numpy.array([[(display_width//2)+1], [display_height-2], [1], [255]]),
                     numpy.array([[(display_width//2)+2], [display_height-2], [1], [255]])]
         elif piece_symbol == "O":
@@ -44,34 +46,29 @@ class Tetromino:
                     numpy.array([[(display_width//2)+0], [display_height-1], [1], [255]]),
                     numpy.array([[(display_width//2)+1], [display_height-2], [1], [255]]),
                     numpy.array([[(display_width//2)+1], [display_height-1], [1], [255]])]
-        # elif piece_symbol == "T":
-        #     return [numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
-        #             numpy.array([[(display_width//2)+0], [display_height-1], [1], [255]]),
-        #             numpy.array([[(display_width//2)-1], [display_height-2], [1], [255]]),
-        #             numpy.array([[(display_width//2)+1], [display_height-2], [1], [255]])]
         elif piece_symbol == "T":
             return [numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
                     numpy.array([[(display_width//2)+0], [display_height-1], [1], [255]]),
                     numpy.array([[(display_width//2)-1], [display_height-2], [1], [255]]),
                     numpy.array([[(display_width//2)+1], [display_height-2], [1], [255]])]
         elif piece_symbol == "S":
-            return [numpy.array([[(display_width//2)-1], [display_height-2], [1], [255]]),
-                    numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
+            return [numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
+                    numpy.array([[(display_width//2)-1], [display_height-2], [1], [255]]),
                     numpy.array([[(display_width//2)+0], [display_height-1], [1], [255]]),
                     numpy.array([[(display_width//2)+1], [display_height-1], [1], [255]])]
         elif piece_symbol == "Z":
-            return [numpy.array([[(display_width//2)-1], [display_height-1], [1], [255]]),
+            return [numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
+                    numpy.array([[(display_width//2)-1], [display_height-1], [1], [255]]),
                     numpy.array([[(display_width//2)+0], [display_height-1], [1], [255]]),
-                    numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
                     numpy.array([[(display_width//2)+1], [display_height-2], [1], [255]])]
         elif piece_symbol == "J":
-            return [numpy.array([[(display_width//2)-1], [display_height-1], [1], [255]]),
+            return [numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
+                    numpy.array([[(display_width//2)-1], [display_height-1], [1], [255]]),
                     numpy.array([[(display_width//2)-1], [display_height-2], [1], [255]]),
-                    numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
                     numpy.array([[(display_width//2)+1], [display_height-2], [1], [255]])]
         elif piece_symbol == "L":
-            return [numpy.array([[(display_width//2)-1], [display_height-2], [1], [255]]),
-                    numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
+            return [numpy.array([[(display_width//2)+0], [display_height-2], [1], [255]]),
+                    numpy.array([[(display_width//2)-1], [display_height-2], [1], [255]]),
                     numpy.array([[(display_width//2)+1], [display_height-2], [1], [255]]),
                     numpy.array([[(display_width//2)+1], [display_height-1], [1], [255]])]
 
@@ -79,7 +76,41 @@ class Tetromino:
         for pos in range(len(self.position)):
             temp = numpy.subtract(self.position[pos], numpy.array([[0], [1], [0], [0]]))
             if self.check_collision(temp, tetris):
-                return False
+                for pixels in self.position:
+                    pixels[3] = 16711680
+                    tetris.pixel.append(pixels)
+                    Tetris.Display.add_pixel(pixels)
+                Tetris.Display.print_pixels()
+
+                for test in range(self.display_height):
+                    count = 0
+                    for pixels in tetris.pixel:
+                        if pixels[1] == test:
+                            count += 1
+                        if count == self.display_width:
+                            print("row " + str(test) + " is full")
+
+                            for pixels2 in tetris.pixel:
+                                if pixels2[1] == test:
+                                    # tetris.pixel.remove(pixels2)
+                                    Tetris.Display.del_pixel(pixels2)
+                            Tetris.Display.print_pixels()
+
+                            time.sleep(.5)
+
+                            for number in range(len(tetris.pixel)):
+                                if not self.check_collision(tetris.pixel[number], tetris):
+                                    tetris.pixel[number] = numpy.subtract(tetris.pixel[number], numpy.array([[0], [1], [0], [0]]))
+
+                            temp = tetris.pixel
+                            tetris.pixel = []
+
+                            for pixels2 in temp:
+                                Tetris.Display.add_pixel(pixels2)
+                                tetris.pixel.append(pixels2)
+                            Tetris.Display.print_pixels()
+
+                return Tetromino(tetris)
 
         # deletes old pixel state
         for pos in self.position:
@@ -94,7 +125,13 @@ class Tetromino:
             Tetris.Display.add_pixel(pos)
         Tetris.Display.print_pixels()
 
+        return self
+
     def rotate(self, tetris: Tetris):
+        # It is pointless to rotate this piece
+        if self.piece == "O":
+            return False
+
         # for translating the pixels to 0/0 in the coordinate system
         # the first pixel of every Tetromino is the reference point for the rotation
         first_translation_matrix = numpy.array([[1, 0, -int(self.position[0][0]), 0],
@@ -184,18 +221,20 @@ class Tetromino:
         if not 0 <= pixel[1]:
             return True
 
-        if tetris.pixel.size > 0:
+        if tetris.pixel:
             for pixels in tetris.pixel:
                 if pixel[0] == pixels[0] and pixel[1] == pixels[1]:
                     return True
             return False
 
+    def delete_row(self, row, tetris):
+        pass
+
 
 if __name__ == '__main__':
-    print("****** Tetris ******")
     Tetris = Tetris()
     piece = Tetromino(Tetris)
-    time.sleep(1)
+    time.sleep(.5)
 
     while True:
         if Tetris.Input.get_key() == "w":
@@ -207,7 +246,9 @@ if __name__ == '__main__':
             Tetris.Input.reset_key()
 
         while Tetris.Input.get_key() == "s":
-            piece.gravity(Tetris)
+            piece = piece.gravity(Tetris)
             Tetris.Input.reset_key()
-            time.sleep(0.25)
+            time.sleep(0.01)
 
+        # piece = piece.gravity(Tetris)
+        # time.sleep(0.5)
