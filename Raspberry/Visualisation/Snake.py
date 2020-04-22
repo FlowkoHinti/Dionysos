@@ -39,7 +39,7 @@ class Snake:
 
     @staticmethod
     def change_format(pos, color):
-        return numpy.array([[pos[0]], [pos[1]], [1], [color]])
+        return numpy.array([[pos[0]], [pos[1]], [color]])
 
     @staticmethod
     def opposite_dir(direction):
