@@ -16,10 +16,11 @@ class Snake:
     i.allowed_keys(["w", "a", "s", "d"])
     display_width = d.get_width()
     display_height = d.get_height()
-    snake_colors = [65280, 55000, 1966427]
-    snake_speeds = [0.7, 0.4, 0.3]
+    snake_colors = [65280, 8926464, 1966427]
+    snake_speeds = [0.6, 0.4, 0.2]
+    food_colors = [16711680, 11010222, 65280]
 
-    def __init__(self, ticks, level):
+    def __init__(self, level):
         self.max_x = self.display_width - 1
         self.max_y = self.display_height - 1
 
@@ -30,15 +31,14 @@ class Snake:
         self.level = level
         self.snake_color = self.snake_colors[level - 1]
         self.ticks = self.snake_speeds[level - 1]
+        self.food_color = self.food_colors[level - 1]
         self.food = None
-        self.food_color = 16711680
         self.next_pos = None
         self.snake_dir = None
         self.alive = False
         self.game_over = False
         self.score = 0
         self.total_score = self.score
-
 
     @staticmethod
     def change_format(pos, color):
@@ -135,7 +135,7 @@ class Snake:
         self.snake.insert(0, self.next_pos)
         self.d.add_pixel(self.change_format(self.next_pos, self.snake_color))
         self.update_score()
-        if (((self.display_width * self.display_height) - 3) * 100 * self.level) == self.score:
+        if self.score >= (((self.display_width * self.display_height) - 3) * 100 * self.level):
             self.win()
 
     def new_food(self):
@@ -173,6 +173,9 @@ class Snake:
         self.snake_dir = None
         self.next_pos = None
         self.food = None
+        self.snake_color = self.snake_colors[self.level - 1]
+        self.food_color = self.food_colors[self.level - 1]
+        self.ticks = self.snake_speeds[self.level - 1]
 
     def win(self):
         self.alive = False
@@ -191,7 +194,7 @@ class Snake:
 
 
 if __name__ == '__main__':
-    s = Snake(0.5, 3)
+    s = Snake(1)
     s.start_game()
 
 
