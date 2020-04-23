@@ -1,18 +1,74 @@
-import threading
 import numpy
 import time
+from Raspberry.Dionysos import Dionysos as Display
+from Raspberry.Dionysos import Input
 
 
 class Tetris:
-    from Raspberry.Dionysos import Dionysos as Display
-    from Raspberry.Dionysos import Input
     Display = Display()
     Input = Input()
+    Input.allowed_keys(["w", "a", "s", "d"])
 
     def __init__(self):
-        self.pixel = []
+        self.pixel = [numpy.array([[-1], [-1], [-1], [-1]])]
+        self.display_height = Tetris.Display.get_height()
+        self.display_width = Tetris.Display.get_width()
         self.Input.listener_start()
-        self.Input.allowed_keys(["w", "a", "s", "d"])
+
+    def remove_row(self):
+        for test in range(self.display_height):
+            count = 0
+            for pixels in self.pixel:
+                if pixels[1] == test:
+                    count += 1
+                if count == self.display_width:
+
+                    items_to_remove = []
+                    for pixels2 in self.pixel:
+                        if pixels2[1] == test:
+                            items_to_remove.append(pixels2)
+                    # items_to_remove.sort()
+                    for item in items_to_remove:
+                        self.remove_array_from_list(item)
+                        Tetris.Display.del_pixel(item)
+                        time.sleep(0.1)
+                        Tetris.Display.print_pixels()
+
+                    # time.sleep(0.1)
+
+                    for number in range(len(self.pixel)):
+                        if int(self.pixel[number][1]) > test:
+                            self.pixel[number] = numpy.subtract(self.pixel[number], numpy.array([[0], [1], [0], [0]]))
+
+                    Tetris.Display.clear_screen()
+
+                    for pixels2 in self.pixel:
+                        Tetris.Display.add_pixel(pixels2)
+
+                    Tetris.Display.print_pixels()
+
+    def check_collision(self, pixel):
+        if not 0 <= pixel[0] < self.display_width or not 0 <= pixel[1]:
+            return True
+
+        if not 0 <= pixel[1]:
+            return True
+
+        if self.pixel:
+            for pixels in self.pixel:
+                if pixel[0] == pixels[0] and pixel[1] == pixels[1]:
+                    return True
+            return False
+
+    def remove_array_from_list(self, arr):
+        ind = 0
+        size = len(self.pixel)
+        while ind != size and not numpy.array_equal(self.pixel[ind], arr):
+            ind += 1
+        if ind != size:
+            self.pixel.pop(ind)
+        else:
+            raise ValueError('array not found in list.')
 
 
 class Tetromino:
@@ -20,16 +76,14 @@ class Tetromino:
 
     def __init__(self, tetris: Tetris):
         self.piece = numpy.random.choice(self.__pieces, 1)
-        self.display_height = Tetris.Display.get_height()
-        self.display_width = Tetris.Display.get_width()
-        self.position = self.starting_position(self.piece, self.display_height, self.display_width)
+        self.position = self.starting_position(self.piece, tetris.display_height, tetris.display_width)
 
-        valid = True
+        self.valid = True
         for pos in self.position:
-            if self.check_collision(pos, tetris):
-                valid = False
+            if tetris.check_collision(pos):
+                self.valid = False
 
-        if valid:
+        if self.valid:
             for vector in self.position:
                 Tetris.Display.add_pixel(vector)
             Tetris.Display.print_pixels()
@@ -75,41 +129,13 @@ class Tetromino:
     def gravity(self, tetris: Tetris):
         for pos in range(len(self.position)):
             temp = numpy.subtract(self.position[pos], numpy.array([[0], [1], [0], [0]]))
-            if self.check_collision(temp, tetris):
+            if tetris.check_collision(temp):
                 for pixels in self.position:
                     pixels[3] = 16711680
                     tetris.pixel.append(pixels)
                     Tetris.Display.add_pixel(pixels)
                 Tetris.Display.print_pixels()
-
-                for test in range(self.display_height):
-                    count = 0
-                    for pixels in tetris.pixel:
-                        if pixels[1] == test:
-                            count += 1
-                        if count == self.display_width:
-                            print("row " + str(test) + " is full")
-
-                            for pixels2 in tetris.pixel:
-                                if pixels2[1] == test:
-                                    # tetris.pixel.remove(pixels2)
-                                    Tetris.Display.del_pixel(pixels2)
-                            Tetris.Display.print_pixels()
-
-                            time.sleep(.5)
-
-                            for number in range(len(tetris.pixel)):
-                                if not self.check_collision(tetris.pixel[number], tetris):
-                                    tetris.pixel[number] = numpy.subtract(tetris.pixel[number], numpy.array([[0], [1], [0], [0]]))
-
-                            temp = tetris.pixel
-                            tetris.pixel = []
-
-                            for pixels2 in temp:
-                                Tetris.Display.add_pixel(pixels2)
-                                tetris.pixel.append(pixels2)
-                            Tetris.Display.print_pixels()
-
+                tetris.remove_row()
                 return Tetromino(tetris)
 
         # deletes old pixel state
@@ -157,7 +183,7 @@ class Tetromino:
             temp = first_translation_matrix.dot(temp)
             temp = rotation_matrix.dot(temp)
             temp = second_translation_matrix.dot(temp)
-            if self.check_collision(temp, tetris):
+            if tetris.check_collision(temp):
                 return False
 
         # deletes old pixel state
@@ -181,7 +207,7 @@ class Tetromino:
         if key == "a":
             for pos in range(len(self.position)):
                 temp = numpy.subtract(self.position[pos], numpy.array([[1], [0], [0], [0]]))
-                if self.check_collision(temp, tetris):
+                if tetris.check_collision(temp):
                     return False
 
             # deletes old pixel state
@@ -200,7 +226,7 @@ class Tetromino:
         if key == "d":
             for pos in range(len(self.position)):
                 temp = numpy.subtract(self.position[pos], numpy.array([[-1], [0], [0], [0]]))
-                if self.check_collision(temp, tetris):
+                if tetris.check_collision(temp):
                     return False
 
             for pos in self.position:
@@ -214,29 +240,14 @@ class Tetromino:
                 Tetris.Display.add_pixel(pos)
             Tetris.Display.print_pixels()
 
-    def check_collision(self, pixel, tetris):
-        if not 0 <= pixel[0] < self.display_width or not 0 <= pixel[1]:
-            return True
-
-        if not 0 <= pixel[1]:
-            return True
-
-        if tetris.pixel:
-            for pixels in tetris.pixel:
-                if pixel[0] == pixels[0] and pixel[1] == pixels[1]:
-                    return True
-            return False
-
-    def delete_row(self, row, tetris):
-        pass
-
 
 if __name__ == '__main__':
     Tetris = Tetris()
     piece = Tetromino(Tetris)
-    time.sleep(.5)
+    exit_flag = False
 
-    while True:
+    timestamp = time.time()
+    while not exit_flag:
         if Tetris.Input.get_key() == "w":
             piece.rotate(Tetris)
             Tetris.Input.reset_key()
@@ -247,8 +258,17 @@ if __name__ == '__main__':
 
         while Tetris.Input.get_key() == "s":
             piece = piece.gravity(Tetris)
+            if not piece.valid:
+                exit_flag = True
             Tetris.Input.reset_key()
             time.sleep(0.01)
 
-        # piece = piece.gravity(Tetris)
-        # time.sleep(0.5)
+        # if time.time() > timestamp + 1:
+        #     piece = piece.gravity(Tetris)
+        #     if not piece.valid:
+        #         exit_flag = True
+        #     timestamp = time.time()
+
+    Tetris.Display.clear_screen()
+    Tetris.Display.close_serial()
+    Tetris.Input.stop_listener()

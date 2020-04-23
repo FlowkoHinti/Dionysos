@@ -23,7 +23,7 @@ class Display:
     def __read_lines(self):
         readThread = threading.Thread(target=self.__read_ser)
         # readThread.daemon = True
-        readThread.start()
+        # readThread.start()
 
     def __read_ser(self):
         while True:
