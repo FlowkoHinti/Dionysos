@@ -24,8 +24,8 @@ void setup() {
   FastLED.show();
 
   Serial.begin(baudrate);
-  //establishConnection();
-  //exchangeInfo();
+  establishConnection();
+  exchangeInfo();
 }
 
 
@@ -39,9 +39,8 @@ void loop() {
 void establishConnection(){
   //Baut die Verbindung auf
   if (Serial){
-    while(Serial.available() == 0){
+    if(Serial.available() == 0){
         Serial.println("SYN");
-        delay(100);
     }
     Serial.println("SOGENUGACK");
   }
