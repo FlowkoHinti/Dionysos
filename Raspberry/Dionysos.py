@@ -43,18 +43,21 @@ class Dionysos:
             return False
 
     def print_pixels(self):
-        self.__display.screen_update_batch_tag()
+        if not self.__del_pos and self.screen == self.__screen_old:
+            print("Do host a print pixels zvü")
+        else:
+            self.__display.screen_update_batch_tag()
 
-        for del_pos in self.__del_pos:
-            self.__display.pixel_off(del_pos)
-        self.__del_pos.clear()
+            for del_pos in self.__del_pos:
+                self.__display.pixel_off(del_pos)
+            self.__del_pos.clear()
 
-        for pixel in self.screen:
-            if pixel not in self.__screen_old:
-                self.__display.pixel_on(pixel)
-        self.__screen_old = self.screen.copy()
+            for pixel in self.screen:
+                if pixel not in self.__screen_old:
+                    self.__display.pixel_on(pixel)
+            self.__screen_old = self.screen.copy()
 
-        self.__display.screen_update_batch_tag()
+            self.__display.screen_update_batch_tag()
 
     def clear_screen(self):
         # vllt nur c an Arduino und screen löschen
