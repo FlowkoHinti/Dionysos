@@ -15,37 +15,50 @@ class Tetris:
         self.display_width = Tetris.Display.get_width()
         self.Input.listener_start()
 
-    def remove_row(self):
-        for test in range(self.display_height):
-            count = 0
-            for pixels in self.pixel:
-                if pixels[1] == test:
-                    count += 1
-                if count == self.display_width:
+    def check_rows(self):
+        rows = []
+        for row in range(self.display_height):
+            active_pixels = 0
+            for pixel in self.pixel:
+                if pixel[1] == row:
+                    active_pixels += 1
+                if active_pixels >= self.display_width:
+                    rows.append(row)
+                    break
+        if rows:
+            rows.sort()
+            self.remove_rows(rows)
+            return True
 
-                    items_to_remove = []
-                    for pixels2 in self.pixel:
-                        if pixels2[1] == test:
-                            items_to_remove.append(pixels2)
-                    # items_to_remove.sort()
-                    for item in items_to_remove:
-                        self.remove_array_from_list(item)
-                        Tetris.Display.del_pixel(item)
-                        time.sleep(0.1)
-                        Tetris.Display.print_pixels()
+        return False
 
-                    # time.sleep(0.1)
+    def remove_rows(self, rows):
+        pixels_to_remove = []
 
-                    for number in range(len(self.pixel)):
-                        if int(self.pixel[number][1]) > test:
-                            self.pixel[number] = numpy.subtract(self.pixel[number], numpy.array([[0], [1], [0], [0]]))
+        for row in rows:
+            for pixel in self.pixel:
+                if pixel[1] == row:
+                    pixels_to_remove.append(pixel)
 
-                    Tetris.Display.clear_screen()
+        for pixel in pixels_to_remove:
+            self.remove_array_from_list(self.pixel, pixel)
+            Tetris.Display.del_pixel(pixel)
+            Tetris.Display.print_pixels()
+            time.sleep(0.05)
 
-                    for pixels2 in self.pixel:
-                        Tetris.Display.add_pixel(pixels2)
+        for row in rows:
+            for number in range(len(self.pixel)):
+                if int(self.pixel[number][1]) > rows[0]:
+                    self.pixel[number] = numpy.subtract(self.pixel[number], numpy.array([[0], [1], [0], [0]]))
 
-                    Tetris.Display.print_pixels()
+        Tetris.Display.clear_screen()
+
+        for pixel in self.pixel:
+            Tetris.Display.add_pixel(pixel)
+
+        Tetris.Display.print_pixels()
+
+        self.check_rows()
 
     def check_collision(self, pixel):
         if not 0 <= pixel[0] < self.display_width or not 0 <= pixel[1]:
@@ -60,13 +73,14 @@ class Tetris:
                     return True
             return False
 
-    def remove_array_from_list(self, arr):
+    @staticmethod
+    def remove_array_from_list(lst, arr):
         ind = 0
-        size = len(self.pixel)
-        while ind != size and not numpy.array_equal(self.pixel[ind], arr):
+        size = len(lst)
+        while ind != size and not numpy.array_equal(lst[ind], arr):
             ind += 1
         if ind != size:
-            self.pixel.pop(ind)
+            lst.pop(ind)
         else:
             raise ValueError('array not found in list.')
 
@@ -135,7 +149,7 @@ class Tetromino:
                     tetris.pixel.append(pixels)
                     Tetris.Display.add_pixel(pixels)
                 Tetris.Display.print_pixels()
-                tetris.remove_row()
+                tetris.check_rows()
                 return Tetromino(tetris)
 
         # deletes old pixel state
@@ -261,13 +275,14 @@ if __name__ == '__main__':
             if not piece.valid:
                 exit_flag = True
             Tetris.Input.reset_key()
+            timestamp = time.time()
             time.sleep(0.01)
 
-        # if time.time() > timestamp + 1:
-        #     piece = piece.gravity(Tetris)
-        #     if not piece.valid:
-        #         exit_flag = True
-        #     timestamp = time.time()
+        if time.time() > timestamp + 1:
+            piece = piece.gravity(Tetris)
+            if not piece.valid:
+                exit_flag = True
+            timestamp = time.time()
 
     Tetris.Display.clear_screen()
     Tetris.Display.close_serial()
