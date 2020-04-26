@@ -43,7 +43,7 @@ class Tetris:
             self.remove_array_from_list(self.active_pixels, active_pixel)
             Tetris.Display.del_pixel(active_pixel)
             Tetris.Display.print_pixels()
-            time.sleep(0.025)
+            time.sleep(0.05)
 
         for number, active_pixel in enumerate(self.active_pixels):
             if int(active_pixel[1]) > rows[0]:
@@ -82,9 +82,13 @@ class Tetris:
 class Tetromino:
     __pieces = ["I", "O", "T", "S", "Z", "J", "L"]
 
-    def __init__(self, tetris: Tetris):
-        self.piece = numpy.random.choice(self.__pieces, 1)
+    def __init__(self, tetris: Tetris, new_piece=None):
+        if not new_piece:
+            self.piece = numpy.random.choice(self.__pieces, 1)
+        else:
+            self.piece = new_piece
         self.position = self.starting_position(self.piece, tetris.display_height, tetris.display_width)
+        self.next_piece = numpy.random.choice(self.__pieces, 1)
 
         self.valid = True
         for pos in self.position:
@@ -146,7 +150,7 @@ class Tetromino:
                     Tetris.Display.add_pixel(pos2)
                 Tetris.Display.print_pixels()
                 tetris.check_rows()
-                return Tetromino(tetris)
+                return Tetromino(tetris, self.next_piece)
 
         # deletes old pixel state
         for pos in self.position:
