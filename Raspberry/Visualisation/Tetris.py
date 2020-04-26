@@ -14,6 +14,8 @@ class Tetris:
         self.display_height = Tetris.Display.get_height()
         self.display_width = Tetris.Display.get_width()
         self.Input.listener_start()
+        self.speed = 1
+        self.block_count = -1
 
     def check_rows(self):
         full_rows = []
@@ -87,6 +89,10 @@ class Tetromino:
             self.piece = numpy.random.choice(self.__pieces, 1)
         else:
             self.piece = new_piece
+
+        tetris.block_count += 1
+        tetris.speed = numpy.power(2, -0.04 * tetris.block_count)
+
         self.position = self.starting_position(self.piece, tetris.display_height, tetris.display_width)
         self.next_piece = numpy.random.choice(self.__pieces, 1)
 
@@ -245,34 +251,34 @@ class Tetromino:
 
 
 if __name__ == '__main__':
-    Tetris = Tetris()
-    piece = Tetromino(Tetris)
+    game = Tetris()
+    piece = Tetromino(game)
     exit_flag = False
-
     timestamp = time.time()
+
     while not exit_flag:
-        if Tetris.Input.get_key() == "w":
-            piece.rotate(Tetris)
-            Tetris.Input.reset_key()
+        if game.Input.get_key() == "w":
+            piece.rotate(game)
+            game.Input.reset_key()
 
-        if Tetris.Input.get_key() == "a" or Tetris.Input.get_key() == "d":
-            piece.move(Tetris.Input.get_key(), Tetris)
-            Tetris.Input.reset_key()
+        if game.Input.get_key() == "a" or game.Input.get_key() == "d":
+            piece.move(game.Input.get_key(), game)
+            game.Input.reset_key()
 
-        while Tetris.Input.get_key() == "s":
-            piece = piece.gravity(Tetris)
+        while game.Input.get_key() == "s":
+            piece = piece.gravity(game)
             if not piece.valid:
                 exit_flag = True
-            Tetris.Input.reset_key()
+            game.Input.reset_key()
             timestamp = time.time()
             time.sleep(0.01)
 
-        if time.time() > timestamp + 1:
-            piece = piece.gravity(Tetris)
+        if time.time() > timestamp + game.speed:
+            piece = piece.gravity(game)
             if not piece.valid:
                 exit_flag = True
             timestamp = time.time()
 
-    Tetris.Display.clear_screen()
-    Tetris.Display.close_serial()
-    Tetris.Input.stop_listener()
+    game.Display.clear_screen()
+    game.Display.close_serial()
+    game.Input.stop_listener()
