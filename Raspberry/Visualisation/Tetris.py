@@ -14,6 +14,7 @@ class Tetris:
         self.display_height = Tetris.Display.get_height()
         self.display_width = Tetris.Display.get_width()
         self.Input.listener_start()
+        self.growth_coefficient = -(1/(self.display_width*self.display_height//2))
         self.speed = 1
         self.block_count = -1
 
@@ -91,7 +92,7 @@ class Tetromino:
             self.piece = new_piece
 
         tetris.block_count += 1
-        tetris.speed = numpy.power(2, -0.04 * tetris.block_count)
+        tetris.speed = numpy.power(2, tetris.growth_coefficient * tetris.block_count)
 
         self.position = self.starting_position(self.piece, tetris.display_height, tetris.display_width)
         self.next_piece = numpy.random.choice(self.__pieces, 1)
