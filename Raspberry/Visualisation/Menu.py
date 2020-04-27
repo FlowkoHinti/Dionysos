@@ -1,53 +1,28 @@
 from numpy import array
+from kivy.app import App
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from kivy.uix.stacklayout import StackLayout
 
 
-# from Raspberry import Dionysos as Game
+class Menu(StackLayout):
+
+    def __init__(self, **kwargs):
+        super(Menu, self).__init__(**kwargs)
+
+        self.username = TextInput(multiline=False)
+        self.button = Button(text="OK")
+        self.add_widget(Label(text='Name'))
+        self.add_widget(self.username)
+        self.add_widget(self.button)
 
 
-class Menu:
-    __cursor_pos = 0
-    __games = ['tetris', 'snake']
-    __selection = []  # ring around
-    input = None
+class MyApp(App):
 
-    def __init__(self, dionysos):
-        self.dy = dionysos
+    def build(self):
+        return Menu()
 
-    def start(self):
-        self.__draw_menu()
-        print("Menü gezeichnet")
-        self.input = Game.Input()
-        self.input.allowed_keys(["w", "s", "#"])
-        self.input.listener_start()
 
-        while self.input.get_key() != "#":
-            self.move_cursor(self.input.get_key())
-
-        self.input.stop_listener()
-
-    def get_pos(self):
-        return self.__cursor_pos
-
-    def __draw_menu(self):
-        Game.Dionysos.clear_screen(self.dy)
-        print("Menü wird gezeichnet")
-
-        # Dionysos.Dionysos.add_pixel(self.dy, array([[0], [0], [1], [55000]]))
-        #
-
-    def move_cursor(self, direction):
-        # change color of selection
-        # --> draw circle around selector ?
-        # --> color of selector
-        if direction == 'w':
-            self.cursor_pos -= 1
-            if self.cursor_pos < 0:
-                self.cursor_pos = len(self.games)
-        elif direction == 's':
-            self.cursor_pos += 1
-            if self.cursor_pos > len(self.games):
-                self.cursor_pos = 0
-
-        # delete old selection positions
-        # add new positions
-        # print screen
+if __name__ == '__main__':
+    MyApp().run()
