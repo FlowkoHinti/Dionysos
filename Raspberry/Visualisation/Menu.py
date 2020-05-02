@@ -1,28 +1,72 @@
 from numpy import array
-from kivy.app import App
-from kivy.uix.label import Label
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
-from kivy.uix.stacklayout import StackLayout
+from kivymd.uix.toolbar import MDToolbar
+from kivy.uix.screenmanager import Screen
+from kivy.uix.anchorlayout import AnchorLayout
+from kivymd.app import MDApp
+from kivymd.uix.button import MDRectangleFlatButton
+from kivy.lang import Builder
+
+KV = '''
+BoxLayout:
+    orientation: "vertical"
+    
+    MDToolbar:
+        title: "DIONYSOS"
+        halign: "center"
+        
+    GridLayout:
+        cols: 3
+        spacing: 10, 10
+        
+        MDCard:
+            size_hint: None, None
+            size: "280dp", "180dp"
+            
+            MDLabel:
+                text: "Tetris"
+                theme_text_color: "Primary"
+                halign: "center"
+                
+        
+        MDCard:
+            size_hint: None, None
+            size: "280dp", "180dp"
+            
+        MDCard:
+            size_hint: None, None
+            size: "280dp", "180dp"
+            
+        MDCard:
+            size_hint: None, None
+            size: "280dp", "180dp"
+            
+
+    '''
 
 
-class Menu(StackLayout):
-
-    def __init__(self, **kwargs):
-        super(Menu, self).__init__(**kwargs)
-
-        self.username = TextInput(multiline=False)
-        self.button = Button(text="OK")
-        self.add_widget(Label(text='Name'))
-        self.add_widget(self.username)
-        self.add_widget(self.button)
-
-
-class MyApp(App):
-
+class MainApp(MDApp):
     def build(self):
-        return Menu()
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "LightBlue"
+        """screen = Screen()
+
+        screen.add_widget(
+            MDToolbar(title="DIONYSOS", type="top")
+        )
+        screen.add_widget(
+            MDRectangleFlatButton(
+                text="Hello, World",
+                pos_hint={"center_x": 0.5, "center_y": 0.5},
+            )
+        )
+        screen.add_widget(
+            MDRectangleFlatButton(
+                text="Test",
+                pos_hint={"center_x": 0.2, "center_y": 0.5},
+            )
+        )"""
+
+        return Builder.load_string(KV)
 
 
-if __name__ == '__main__':
-    MyApp().run()
+MainApp().run()
