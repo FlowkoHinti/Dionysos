@@ -1,93 +1,124 @@
+from kivy.config import Config
+
+Config.set('graphics', 'width', '200')
+Config.set('graphics', 'height', '200')
+Config.set('graphics', 'resizable', False)
+Config.write()
+
+from kivy.core.window import Window
+
+Window.size = (800, 480)
+
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from subprocess import call
+
+# 800x480
+# 110mmx66mm
 
 KV = '''
 BoxLayout:
     orientation: "vertical"
     
-    MDToolbar:
-        title: "DIONYSOS"
-        halign: "center"
-        
+    MDCard:
+        size_hint: 1, None
+        md_bg_color: [0,0,0,0]
+        FloatLayout:
+            pos: self.parent.pos
+            Image:
+                pos: self.parent.pos
+                source:"icons/grape.png"
+            MDLabel:
+                halign: "center"
+                pos: self.parent.pos
+                markup: True
+                theme_text_color: "Custom"
+                outline_width: dp(2)
+                outline_color: [1,0.8,0]
+                text: "[b][i][size=35][color=#303030]DIONYSOS[/color][/size][/i][/b]"
+
+           
+          
+            
+                        
+    
     GridLayout:
         cols: 3
         spacing: 10, 10
         
-        
         MDCard:
             size_hint: None, None
-            size: "280dp", "180dp"
+            size: "395dp", "253dp"
+            background: "icons/tetris.jpg"
             
             BoxLayout:
                 orientation: "vertical"
                 
                 MDLabel:
-                    text: "Tetris"
-                    theme_text_color: "Primary"
+                    markup: True
+                    theme_text_color: "Custom"
+                    outline_width: dp(2)
+                    outline_color: [1,0.8,0]
+                    text: "[b][size=50][color=#FF0000]T[/color][color=#FFA000]E[/color][color=#FFE000]T[/color][color=#00E000]R[/color][color=#00DFFF]I[/color][color=#AF00FF]S[/color][/size][/b]"
                     halign: "center"
                 
-                Image:
-                    source: "A:/Dionysos/tetris.jpg"
-                    allow_stretch: True
-                    keep_ratio: False
                 
                 BoxLayout:
                     
                     MDRectangleFlatIconButton:
                         icon: "play"
-                        text: "Play"
-                        width: dp(140)
+                        markup: True
+                        text: "[b][size=20]Play[/size][/b]"
+                        height: dp(50)
+                        width: dp(197)
                         on_press: app.start_game('t')
                     
                     MDRectangleFlatIconButton:
                         icon: "trophy"
-                        text: "Highscore"
-                        width: dp(140)
+                        markup: True
+                        text: "[b][size=20]Highscore[/size][/b]"
+                        height: dp(50)
+                        width: dp(197)
 
         MDCard:
             size_hint: None, None
-            size: "280dp", "180dp"
-
+            size: "395dp", "253dp"
+            background: "icons/snake.jpg"
             
             BoxLayout:
                 orientation: "vertical"
                 
                 MDLabel:
-                    text: "Snake"
-                    theme_text_color: "Primary"
+                    theme_text_color: "Custom"
+                    markup: True
+                    outline_width: dp(2)
+                    outline_color: [1,0.8,0]
+                    text: "[b][size=50][color=#00FF00]S[/color][color=#00FF00]N[/color][color=#00FF00]A[/color][color=#00FF00]K[/color][color=#FF0000]E[/color][/size][/b]"
                     halign: "center"
                 
-                Image:
-                    source: "A:/Dionysos/tetris.jpg"
-                    allow_stretch: True
-                    keep_ratio: False
                 
                 BoxLayout:
                     
                     MDRectangleFlatIconButton:
                         icon: "play"
-                        text: "Play"
-                        width: dp(140)
-                        on_press: app.start_game('s')
+                        markup: True
+                        text: "[b][size=20]Play[/size][/b]"
+                        height: dp(50)
+                        width: dp(197)
+                        on_press: app.start_game('t')
                     
                     MDRectangleFlatIconButton:
                         icon: "trophy"
-                        text: "Highscore"
-                        width: dp(140)
-            
-        MDCard:
-            size_hint: None, None
-            size: "280dp", "180dp"
-            
-        MDCard:
-            size_hint: None, None
-            size: "280dp", "180dp"
-                
+                        markup: True
+                        text: "[b][size=20]Highscore[/size][/b]"
+                        height: dp(50)
+                        width: dp(197)
+        
 '''
 
 
 class MainApp(MDApp):
+
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "LightBlue"
