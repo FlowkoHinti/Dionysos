@@ -139,12 +139,12 @@ class Snake:
         return True
 
     def eat(self):
-        self.new_food()
-        self.snake.insert(0, self.next_pos)
-        self.d.add_pixel(self.change_format(self.next_pos, self.snake_color))
         self.update_score()
         if self.score >= (((self.display_width * self.display_height) - 3) * 100 * self.level):
             self.win()
+        self.new_food()
+        self.snake.insert(0, self.next_pos)
+        self.d.add_pixel(self.change_format(self.next_pos, self.snake_color))
 
     def new_food(self):
         rand_x = random.randint(0, self.max_x)
