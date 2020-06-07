@@ -35,12 +35,7 @@ BoxLayout:
                 theme_text_color: "Custom"
                 outline_width: dp(2)
                 outline_color: [1,0.8,0]
-                text: "[b][i][size=35][color=#303030]DIONYSOS[/color][/size][/i][/b]"
-
-           
-          
-            
-                        
+                text: "[b][i][size=35][color=#303030]DIONYSOS[/color][/size][/i][/b]"     
     
     GridLayout:
         cols: 3
@@ -105,7 +100,7 @@ BoxLayout:
                         text: "[b][size=20]Play[/size][/b]"
                         height: dp(50)
                         width: dp(197)
-                        on_press: app.start_game('t')
+                        on_press: app.start_game('s')
                     
                     MDRectangleFlatIconButton:
                         icon: "trophy"
