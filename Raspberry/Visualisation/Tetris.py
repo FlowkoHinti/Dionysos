@@ -1,5 +1,75 @@
+import threading
 import numpy
 import time
+from kivymd.app import MDApp
+from kivy.lang import Builder
+from kivy.uix.image import Image
+from kivy.uix.boxlayout import BoxLayout
+
+
+KV = '''
+<MainLayout>
+    orientation: "vertical"
+    
+    MDToolbar:
+        title: "DIONYSOS"
+        halign: "center"
+
+    GridLayout:
+        cols: 1
+        spacing: 10, 10
+
+        MDCard:
+            size_hint: None, None
+            size: "800dp", "480dp"
+
+            BoxLayout:
+                orientation: "vertical"
+                spacing: 10
+
+                TextInput:
+                    id: my_textinput
+                    halign: "center"
+                    valign: "center"
+                    size_hint: (1, 0.2)
+                    text: "Next Piece:"
+                    on_text: root.change_image()
+
+                Image:
+                    id: my_img
+                    source: "C:/Users/Dominik/Desktop/Memes/8c52ec14be599270.jpg"
+'''
+# MDLabel:
+#                     text: "Next Piece:"
+#                     theme_text_color: "Primary"
+#                     halign: "center"
+#                     valign: "center"
+#                     size_hint: (1, 0.2)
+Builder.load_string(KV)
+
+
+class MainLayout(BoxLayout):
+    def change_image(self):
+        my_img = self.ids['my_img']
+        my_img.source = 'C:/Users/Dominik/Desktop/Memes/ableiten.jpg'
+
+
+class MainApp(MDApp):
+    def build(self):
+        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.primary_palette = "LightBlue"
+        self.main_layout = MainLayout()
+        # test_thread = threading.Thread(target=tetris_main(self.main_layout))
+        # test_thread.start()
+        # self.img_change()
+        return self.main_layout
+
+        # layout = BoxLayout()
+        # layout.add_widget(MainLayout)
+        # layout.add_widget(Builder.load_string(KV))
+
+    def img_change(self):
+        self.main_layout.change_image()
 
 
 class Tetris:
@@ -244,7 +314,7 @@ class Tetromino:
             self.__position[pos] = second_translation_matrix.dot(self.__position[pos])
 
         # shows new pixels
-        for pos in piece.__position:
+        for pos in self.__position:
             tetris.Display.add_pixel(pos)
         tetris.Display.print_pixels()
 
@@ -275,7 +345,7 @@ class Tetromino:
         tetris.Display.print_pixels()
 
 
-if __name__ == '__main__':
+def tetris_main():
     game = Tetris()
     piece = Tetromino(game)
     exit_flag = False
@@ -307,3 +377,10 @@ if __name__ == '__main__':
     game.Display.clear_screen()
     game.Display.close_serial()
     game.Input.stop_listener()
+
+
+if __name__ == '__main__':
+    test_thread = threading.Thread(target=tetris_main)
+    test_thread.start()
+    MainApp().run()
+    test_thread.join()

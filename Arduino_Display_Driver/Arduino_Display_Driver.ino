@@ -20,7 +20,7 @@ void setup() {
      leds[i] = CRGB::Black;
   }
   
-  FastLED.setBrightness(30);
+  FastLED.setBrightness(25);
   FastLED.show();
 
   Serial.begin(baudrate);
