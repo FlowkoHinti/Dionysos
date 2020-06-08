@@ -4,11 +4,6 @@ from Raspberry.Dionysos import Dionysos
 from time import sleep
 import numpy
 
-"""TODO:
-Win condition
-levels
-"""
-
 
 class Snake:
     d = Dionysos()
